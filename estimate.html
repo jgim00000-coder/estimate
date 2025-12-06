@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간단 견적 계산기</title>
+    <style>
+        body {
+            font-family: Arial, "Malgun Gothic", sans-serif;
+            background: #f6f6f6;
+            padding: 20px;
+        }
+        .box {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .result {
+            background: #e8f2ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0078ff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #005fcc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>📄 간단 견적 계산기</h2>
+
+    <label>상품명</label>
+    <input id="product" placeholder="예: A4 무선제본 100p">
+
+    <label>페이지 수</label>
+    <input id="pages" type="number" value="100">
+
+    <label>부수</label>
+    <input id="copies" type="number" value="50">
+
+    <label>코팅 옵션</label>
+    <select id="coating">
+        <option value="0">코팅 없음</option>
+        <option value="200">단면 코팅 (+200원 추가)</option>
+        <option value="400">양면 코팅 (+400원 추가)</option>
+    </select>
+
+    <button onclick="calc()">견적 계산</button>
+
+    <div class="result" id="resultBox">결과가 여기 표시됩니다.</div>
+</div>
+
+<script>
+function calc() {
+    let pages = Number(document.getElementById("pages").value);
+    let copies = Number(document.getElementById("copies").value);
+    let coating = Number(document.getElementById("coating").value);
+
+    let baseCost = pages * 10; // 1p당 10원 가정
+    let totalPerCopy = baseCost + coating;
+    let total = totalPerCopy * copies;
+
+    document.getElementById("resultBox").innerHTML = `
+        총 견적 금액: <b>${total.toLocaleString()}원</b>
+    `;
+}
+</script>
+
+</body>
+</html>
