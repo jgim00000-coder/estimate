@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>건우프린팅 - 프리미엄 통합 견적</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+  <style>
+    :root{
+      --primary:#037a3f;
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e6edf3;
+      --radius:18px;
+      --shadow:0 10px 25px -8px rgba(15,23,42,.10);
+
+      /* Adcore-like theme */
+      --home-primary:#1f7ea9;
+      --home-primary-dark:#176c92;
+      --home-soft:#f3f7fb;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Pretendard Variable", Pretendard, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    /* ================= HEADER ================= */
+    .header{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:sticky;
+      top:10px;
+      z-index:1000;
+    }
+
+    .header-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .logo-icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:var(--primary);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      font-size:20px;
+      flex:0 0 auto;
+    }
+
+    .brand-info h1{
+      margin:0;
+      font-size:22px;
+      font-weight:1000;
+      letter-spacing:-.4px;
+    }
+
+    .top-nav{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .top-nav a{
+      text-decoration:none;
+      color:var(--text);
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .top-nav a:hover{
+      color:var(--home-primary);
+      text-decoration:underline;
+    }
+
+    .top-nav .nav-cart{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .cart-badge{
+      background:var(--home-primary);
+      color:#fff;
+      font-size:11px;
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:1000;
+    }
+
+    .header-bottom{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 16px;
+      background:var(--home-primary);
+      color:#fff;
+    }
+
+    .menu-btn{
+      width:44px;
+      height:38px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.35);
+      background:transparent;
+      color:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      flex:0 0 auto;
+    }
+
+    .cat-nav{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      overflow:auto;
+      scrollbar-width:none;
+      flex:1;
+    }
+    .cat-nav::-webkit-scrollbar{ display:none; }
+
+    .cat-nav a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:1000;
+      font-size:13px;
+      padding:9px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+      opacity:.95;
+      cursor:pointer;
+      transition:.15s;
+    }
+
+    .cat-nav a:hover{ background:rgba(255,255,255,.14); }
+    .cat-nav a.active{ background:rgba(255,255,255,.22); }
+
+    /* ================= COMMON CARD ================= */
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-body{ padding:18px; }
+
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:14px;
+      font-weight:1000;
+      cursor:pointer;
+      transition:.15s;
+      font-size:14px;
+    }
+    .btn-primary{ background:var(--home-primary); color:#fff; }
+    .btn-primary:hover{ background:var(--home-primary-dark); }
+    .btn-secondary{ background:#1e293b; color:#fff; }
+
+    /* ================= HOME GRID (Row-based) ================= */
+    #view-home{ display:block; }
+
+    .home-grid{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .home-row{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:16px;
+      align-items:start;
+    }
+
+    /* 첫 행(슬라이더/로그인)만 높이 맞춤 */
+    .home-row-hero{ align-items:stretch; }
+    .home-row-hero .hero-left{ min-width:0; }
+    .home-row-hero .home-slider{ height:100%; }
+    .home-row-hero .home-login-card{ height:100%; }
+    .home-row-hero .home-login-card .card-body{
+      height: calc(100% - 52px);
+      display:flex;
+      flex-direction:column;
+    }
+    .home-row-hero .home-shortcuts{ margin-top:14px; }
+    .home-row-hero .home-login-card .card-body > :last-child{ margin-top:auto; }
+
+    @media (max-width: 980px){
+      .home-row{ grid-template-columns: 1fr; }
+      .header{ position:static; }
+    }
+
+    /* ---- Slider ---- */
+    .home-slider{
+      border-radius:var(--radius);
+      overflow:hidden;
+      position:relative;
+      background:#000;
+      border:1px solid var(--line);
+      aspect-ratio: 16 / 9;
+      height: clamp(260px, 30vw, 460px);
+    }
+
+    .home-slide{ position:absolute; inset:0; display:none; }
+    .home-slide.active{ display:block; }
+
+    .home-slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.90;
+    }
+
+    .home-slide-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.60));
+    }
+
+    .home-slide-text{
+      position:absolute;
+      left:24px;
+      bottom:22px;
+      color:#fff;
+      max-width:70%;
+    }
+
+    .home-slide-text h2{
+      margin:0;
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.4px;
+    }
+
+    .home-slide-text p{
+      margin:8px 0 0 0;
+      font-weight:800;
+      opacity:.92;
+    }
+
+    .home-slider-ctrl{
+      position:absolute;
+      left:14px;
+      bottom:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.70);
+      border-radius:999px;
+      padding:7px 10px;
+    }
+
+    .home-slider-ctrl button{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-weight:1100;
+      padding:4px 8px;
+      border-radius:999px;
+    }
+    .home-slider-ctrl button:hover{ background:rgba(0,0,0,.06); }
+
+    .home-pager{
+      min-width:64px;
+      text-align:center;
+      font-weight:1100;
+      font-size:12px;
+      color:#334155;
+    }
+
+    /* ---- Login card ---- */
+    .home-login-head{
+      padding:14px 18px;
+      font-weight:1100;
+      background:#f8fbff;
+      border-bottom:1px solid var(--line);
+    }
+
+    .home-mini-links{
+      display:flex;
+      justify-content:space-between;
+      margin-top:10px;
+      font-weight:900;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .home-mini-links a{
+      color:var(--muted);
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .home-mini-links a:hover{ color:var(--text); text-decoration:underline; }
+
+    .home-shortcuts{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .home-shortcuts .sc{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 8px;
+      text-align:center;
+      cursor:pointer;
+      transition:.15s;
+      background:#fff;
+    }
+
+    .home-shortcuts .sc:hover{ border-color:var(--home-primary); transform:translateY(-1px); }
+
+    .home-shortcuts .sico{
+      font-size:20px;
+      color:var(--home-primary);
+      margin-bottom:4px;
+    }
+
+    .home-shortcuts .stxt{
+      font-size:12px;
+      font-weight:1100;
+      color:#334155;
+    }
+
+    /* ---- Quick icons row (make them look like real tiles) ---- */
+    .quick-card{ padding:18px; }
+
+    .home-quick-row{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap:12px;
+    }
+
+    @media (max-width: 980px){
+      .home-quick-row{ grid-template-columns: repeat(3, minmax(120px, 1fr)); }
+    }
+
+    @media (max-width: 520px){
+      .home-quick-row{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+    }
+
+    .home-quick{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px 12px;
+      text-align:center;
+      cursor:pointer;
+      transition:.15s;
+      background:#fff;
+    }
+
+    .home-quick:hover{ border-color:var(--home-primary); box-shadow:var(--shadow); transform:translateY(-1px); }
+
+    .home-quick .ico{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      margin:0 auto 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:24px;
+      color:var(--home-primary);
+      background:var(--home-soft);
+    }
+
+    .home-quick .txt{
+      font-weight:1100;
+      font-size:13px;
+      color:#334155;
+    }
+
+    /* ---- Notice card ---- */
+    .home-notice .notice-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+
+    .notice-head .ttl{ font-weight:1100; font-size:16px; }
+    .notice-head .more{ font-weight:1100; font-size:12px; color:var(--home-primary); cursor:pointer; }
+    .notice-head .more:hover{ text-decoration:underline; }
+
+    .notice-list{
+      padding:14px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .notice-item{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      font-weight:900;
+      color:#334155;
+      cursor:pointer;
+    }
+
+    .notice-tag{
+      font-size:11px;
+      font-weight:1100;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#eaf4ff;
+      color:#1d4ed8;
+      white-space:nowrap;
+    }
+
+    .notice-title{ font-size:13px; }
+    .notice-item:hover .notice-title{ text-decoration:underline; }
+
+    /* ---- CS ---- */
+    .home-cs{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .cs-left{ display:flex; align-items:center; gap:14px; }
+
+    .cs-ico{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:var(--home-soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      color:var(--home-primary);
+    }
+
+    .cs-txt .cst{ margin:0; font-weight:1100; font-size:18px; }
+    .cs-txt .csh{ margin:4px 0 0 0; font-weight:900; font-size:12px; color:var(--muted); }
+
+    .cs-right{ text-align:right; }
+    .cs-right .num{ margin:0; font-size:30px; font-weight:1200; letter-spacing:-.5px; }
+    .cs-right .sub{ margin:4px 0 0 0; font-size:12px; font-weight:900; color:var(--muted); }
+
+    /* ---- Floating AI button ---- */
+    .ai-float-btn{
+      position:fixed;
+      right:26px;
+      bottom:26px;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:16px 20px;
+      font-weight:1100;
+      background:linear-gradient(135deg, #6366f1, #8b5cf6);
+      color:#fff;
+      box-shadow:0 10px 28px rgba(99,102,241,.35);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      z-index:2000;
+    }
+
+    /* ---- Toast ---- */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:26px;
+      transform:translateX(-50%);
+      background:#0f172a;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:999px;
+      opacity:0;
+      pointer-events:none;
+      transition:.2s;
+      z-index:3000;
+    }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(-6px); }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header class="header">
+      <div class="header-top">
+        <div class="brand" onclick="goHome()">
+          <div class="logo-icon">P</div>
+          <div class="brand-info"><h1>건우프린팅</h1></div>
+        </div>
+
+        <nav class="top-nav" id="nav-links"></nav>
+      </div>
+
+      <div class="header-bottom">
+        <button class="menu-btn" onclick="toggleFakeMenu()">☰</button>
+        <div class="cat-nav">
+          <a class="active" onclick="goHome()">전체상품</a>
+          <a onclick="setCategory('indigo')">소량 인디고</a>
+          <a onclick="setCategory('digital')">흑백 디지털</a>
+          <a onclick="setCategory('offset')">대량 옵셋</a>
+          <a onclick="toast('안내장 준비중')">안내장</a>
+          <a onclick="toast('스티커 준비중')">스티커</a>
+          <a onclick="toast('실사출력 준비중')">실사출력</a>
+          <a onclick="toast('기타상품 준비중')">기타상품</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= HOME ================= -->
+    <div id="view-home">
+      <div class="home-grid">
+
+        <!-- Row 1: Slider / Login -->
+        <div class="home-row home-row-hero">
+          <div class="hero-left">
+            <div class="home-slider" id="home-slider">
+              <div class="home-slide active">
+                <img src="https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=1400&q=80" alt="slide1" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>프리미엄 견적 시스템</h2>
+                  <p>입력은 간단하게, 결과는 정확하게</p>
+                </div>
+              </div>
+
+              <div class="home-slide">
+                <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1400&q=80" alt="slide2" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>소량부터 대량까지</h2>
+                  <p>인디고 · 디지털 · 옵셋을 한 화면에서</p>
+                </div>
+              </div>
+
+              <div class="home-slide">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=1400&q=80" alt="slide3" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>장바구니 + 주문 접수</h2>
+                  <p>사양/파일/배송을 한 번에 정리</p>
+                </div>
+              </div>
+
+              <div class="home-slider-ctrl">
+                <button onclick="homePrev()">‹</button>
+                <div class="home-pager" id="home-pager">1 / 3</div>
+                <button onclick="homeNext()">›</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card home-login-card">
+            <div class="home-login-head">로그인 후 이용해주세요</div>
+            <div class="card-body">
+              <button class="btn btn-primary" onclick="goLogin()">건우프린팅 로그인</button>
+              <div class="home-mini-links">
+                <a onclick="toast('ID/PW 찾기 준비중')">ID·PW 찾기</a>
+                <a onclick="toast('회원가입 준비중')">회원가입</a>
+              </div>
+
+              <div class="home-shortcuts">
+                <div class="sc" onclick="toast('장바구니 준비중')"><div class="sico">🛒</div><div class="stxt">장바구니</div></div>
+                <div class="sc" onclick="toast('주문조회 준비중')"><div class="sico">📄</div><div class="stxt">주문조회</div></div>
+                <div class="sc" onclick="toast('작업유의 준비중')"><div class="sico">⚠️</div><div class="stxt">작업유의</div></div>
+                <div class="sc" onclick="toast('제품안내 준비중')"><div class="sico">📌</div><div class="stxt">제품안내</div></div>
+                <div class="sc" onclick="toast('FAQ 준비중')"><div class="sico">❓</div><div class="stxt">FAQ</div></div>
+                <div class="sc" onclick="toast('고객센터 준비중')"><div class="sico">☎️</div><div class="stxt">고객센터</div></div>
+                <div class="sc" onclick="toast('정보수정 준비중')"><div class="sico">👤</div><div class="stxt">정보수정</div></div>
+                <div class="sc" onclick="toast('관리자 준비중')"><div class="sico">🛠️</div><div class="stxt">관리자</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Quick / Notice -->
+        <div class="home-row">
+          <div class="card">
+            <div class="quick-card">
+              <div class="home-quick-row">
+                <div class="home-quick" onclick="toast('당일판 안내 준비중')"><div class="ico">⏰</div><div class="txt">당일판</div></div>
+                <div class="home-quick" onclick="toast('출고일 안내 준비중')"><div class="ico">📅</div><div class="txt">출고일</div></div>
+                <div class="home-quick" onclick="toast('묶음배송 안내 준비중')"><div class="ico">📦</div><div class="txt">묶음배송</div></div>
+                <div class="home-quick" onclick="toast('견적의뢰 준비중')"><div class="ico">🧾</div><div class="txt">견적의뢰</div></div>
+                <div class="home-quick" onclick="toast('AI 문의 열기')"><div class="ico">🤖</div><div class="txt">AI문의</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card home-notice">
+            <div class="notice-head">
+              <div class="ttl">NOTICE</div>
+              <div class="more" onclick="toast('공지 더보기 준비중')">더보기</div>
+            </div>
+            <div class="notice-list">
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[일반공지]</span><span class="notice-title">2026년 새해인사</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">친환경 미니캘린더 출시</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">보안스티커 출시</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">포토퍼즐 출시</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: CS / Print Type -->
+        <div class="home-row">
+          <div>
+            <div class="home-cs">
+              <div class="cs-left">
+                <div class="cs-ico">🎧</div>
+                <div class="cs-txt">
+                  <p class="cst">C/S 센터</p>
+                  <p class="csh">월~금 09:00~18:30 / 토·일·공휴일 휴무</p>
+                </div>
+              </div>
+              <div class="cs-right">
+                <p class="num">1688-4152</p>
+                <p class="sub">문의: 1688-4152 (내선 5번)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h3 style="text-align:center; margin:0 0 12px 0; font-weight:1100;">인쇄 방식 선택</h3>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+                <button class="btn btn-primary" onclick="toast('인디고(소량) 준비중')">인디고</button>
+                <button class="btn btn-secondary" onclick="toast('디지털(흑백) 준비중')">디지털</button>
+                <button class="btn btn-secondary" onclick="toast('옵셋(대량) 준비중')">옵셋</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <button class="ai-float-btn" onclick="toast('AI 문의(모달)는 원본 기능에 연결하면 됩니다')">💬 AI 문의</button>
+
+  <script>
+    function get(id){ return document.getElementById(id); }
+
+    function toast(msg){
+      const t = get('toast');
+      if(!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
+    }
+
+    // Top nav (비로그인 기본)
+    function renderNav(){
+      const nav = get('nav-links');
+      if(!nav) return;
+      nav.innerHTML = `
+        <a onclick="toast('로그인 준비중')">로그인</a>
+        <a onclick="toast('회원가입 준비중')">회원가입</a>
+        <a onclick="toast('ID/PW 찾기 준비중')">ID/PW찾기</a>
+        <a onclick="toast('고객센터 준비중')">고객센터</a>
+        <a onclick="toast('주문내역 준비중')">주문내역</a>
+        <a onclick="toast('장바구니 준비중')" class="nav-cart">장바구니 <span class="cart-badge" id="cart-badge">0</span></a>
+      `;
+    }
+
+    // Home navigation stubs
+    function goHome(){ window.scrollTo({top:0, behavior:'smooth'}); }
+    function goLogin(){ toast('로그인 화면은 원본 로직에 연결'); }
+    function toggleFakeMenu(){ toast('전체 메뉴는 추후 연결'); }
+    function setCategory(cat){ toast(`카테고리 진입(${cat})은 원본 계산기 뷰로 연결`); }
+
+    // Slider
+    let homeIdx = 0;
+    function slides(){ return Array.from(document.querySelectorAll('#home-slider .home-slide')); }
+    function updatePager(){
+      const s = slides();
+      s.forEach((el,i)=>el.classList.toggle('active', i===homeIdx));
+      const p = get('home-pager');
+      if(p) p.textContent = `${homeIdx+1} / ${s.length}`;
+    }
+    function homeNext(){
+      const s = slides();
+      if(!s.length) return;
+      homeIdx = (homeIdx + 1) % s.length;
+      updatePager();
+    }
+    function homePrev(){
+      const s = slides();
+      if(!s.length) return;
+      homeIdx = (homeIdx - 1 + s.length) % s.length;
+      updatePager();
+    }
+
+    renderNav();
+    updatePager();
+  </script>
+</body>
+</html>

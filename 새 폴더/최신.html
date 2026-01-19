@@ -1,0 +1,2523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>건우프린팅 - 프리미엄 통합 견적</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
+
+  <style>
+    :root{
+      --primary:#037a3f;
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e6edf3;
+      --radius:18px;
+      --shadow:0 10px 25px -8px rgba(15,23,42,.10);
+
+      /* Adcore-like theme */
+      --home-primary:#1f7ea9;
+      --home-primary-dark:#176c92;
+      --home-soft:#f3f7fb;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Pretendard Variable", Pretendard, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    /* ================= HEADER ================= */
+    .header{
+      background:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,0.06);
+      position:relative;
+      z-index:1000;
+    }
+
+    .header-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding:8px 12px 10px 32px;
+      gap:12px;
+      background:#fff;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .logo-icon{
+      width:50px;
+      height:50px;
+      border-radius:12px;
+      background:var(--primary);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:24px;
+      flex:0 0 auto;
+    }
+
+    .brand-info h1{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.3px;
+      color:#0f172a;
+    }
+
+    .top-nav{
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-top:4px;
+      margin-left:auto;
+    }
+
+    .top-nav a{
+      text-decoration:none;
+      color:#475569;
+      font-weight:600;
+      font-size:12px;
+      cursor:pointer;
+      line-height:1;
+      transition:color 0.2s;
+    }
+
+    .top-nav a:hover{
+      color:var(--home-primary);
+    }
+
+    .top-nav .nav-cart{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .cart-badge{
+      background:var(--home-primary);
+      color:#fff;
+      font-size:10px;
+      padding:2px 7px;
+      border-radius:999px;
+      font-weight:700;
+      min-width:18px;
+      text-align:center;
+    }
+
+    .header-bottom{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:14px 40px;
+      background:#2b7fa8;
+      color:#fff;
+    }
+
+    .menu-btn{
+      width:42px;
+      height:42px;
+      border-radius:10px;
+      border:none;
+      background:transparent;
+      color:#fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:20px;
+      flex:0 0 auto;
+      transition:background 0.2s;
+    }
+
+    .menu-btn:hover{
+      background:rgba(255,255,255,0.18);
+    }
+
+    .cat-nav{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      overflow:visible;
+      scrollbar-width:none;
+      flex:1;
+    }
+    .cat-nav::-webkit-scrollbar{ display:none; }
+
+    .cat-nav a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+      padding:10px 18px;
+      border-radius:8px;
+      position:relative;
+      white-space:nowrap;
+      cursor:pointer;
+      transition:all 0.2s;
+      background:transparent;
+    }
+
+    .cat-nav a:hover{ 
+      background:rgba(255,255,255,0.15);
+    }
+    
+    .cat-nav a.active{ 
+      background:rgba(255,255,255,0.2);
+      font-weight:700;
+    }
+
+    .cat-nav-item{
+      position:relative;
+    }
+
+    .cat-dropdown{
+      position:absolute;
+      top:100%;
+      left:0;
+      background:#fff;
+      border-radius:8px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+      margin-top:4px;
+      min-width:140px;
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.2s, visibility 0.2s;
+      z-index:1000;
+    }
+
+    .cat-nav-item:hover .cat-dropdown{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .cat-dropdown a{
+      display:block;
+      color:#334155;
+      padding:10px 16px;
+      font-size:13px;
+      font-weight:600;
+      border-radius:0;
+    }
+
+    .cat-dropdown a:first-child{
+      border-radius:8px 8px 0 0;
+    }
+
+    .cat-dropdown a:last-child{
+      border-radius:0 0 8px 8px;
+    }
+
+    .cat-dropdown a:hover{
+      background:#f1f5f9;
+    }
+
+    /* ================= COMMON CARD ================= */
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-body{ padding:18px; }
+
+    .btn{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      padding:14px;
+      font-weight:1000;
+      cursor:pointer;
+      transition:.15s;
+      font-size:14px;
+    }
+    .btn-primary{ background:var(--home-primary); color:#fff; }
+    .btn-primary:hover{ background:var(--home-primary-dark); }
+    .btn-secondary{ background:#1e293b; color:#fff; }
+
+    /* ================= HOME GRID (Row-based) ================= */
+    #view-home{ display:block; }
+
+    .home-grid{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .home-row{
+      display:grid;
+      grid-template-columns: 1fr 370px;
+      gap:16px;
+      align-items:stretch;
+    }
+
+    /* 첫 행(슬라이더/로그인)만 높이 맞춤 */
+    .home-row-hero .hero-left{ min-width:0; flex:1; overflow:hidden; }
+    .home-row-hero .home-slider{ height:100%; }
+    .home-row-hero .home-login-card{ height:100%; }
+    .home-row-hero .home-login-card .card-body{
+      height: calc(100% - 52px);
+      display:flex;
+      flex-direction:column;
+    }
+    .home-row-hero .home-shortcuts{ margin-top:14px; }
+    .home-row-hero .home-login-card .card-body > :last-child{ margin-top:auto; }
+
+    @media (max-width: 980px){
+      .home-row{ grid-template-columns: 1fr; }
+      .header{ position:static; }
+    }
+
+    /* ---- Slider ---- */
+    .home-slider{
+      border-radius:var(--radius);
+      overflow:hidden;
+      position:relative;
+      background:#000;
+      border:1px solid var(--line);
+      aspect-ratio: 16 / 6;
+      height: clamp(160px, 18vw, 260px);
+      width:100%;
+      max-width:100%;
+    }
+
+    .home-slide{ position:absolute; inset:0; display:none; }
+    .home-slide.active{ display:block; }
+
+    .home-slide img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.90;
+    }
+
+    .home-slide-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.60));
+    }
+
+    .home-slide-text{
+      position:absolute;
+      left:24px;
+      bottom:22px;
+      color:#fff;
+      max-width:70%;
+    }
+
+    .home-slide-text h2{
+      margin:0;
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.4px;
+    }
+
+    .home-slide-text p{
+      margin:8px 0 0 0;
+      font-weight:800;
+      opacity:.92;
+    }
+
+    .home-slider-ctrl{
+      position:absolute;
+      left:14px;
+      bottom:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.70);
+      border-radius:999px;
+      padding:7px 10px;
+    }
+
+    .home-slider-ctrl button{
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-weight:1100;
+      padding:4px 8px;
+      border-radius:999px;
+    }
+    .home-slider-ctrl button:hover{ background:rgba(0,0,0,.06); }
+
+    .home-pager{
+      min-width:64px;
+      text-align:center;
+      font-weight:1100;
+      font-size:12px;
+      color:#334155;
+    }
+
+    /* ---- Login card ---- */
+    .home-login-head{
+      padding:14px 18px;
+      font-weight:1100;
+      background:#f8fbff;
+      border-bottom:1px solid var(--line);
+    }
+
+    .home-mini-links{
+      display:flex;
+      justify-content:space-between;
+      margin-top:10px;
+      font-weight:900;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .home-mini-links a{
+      color:var(--muted);
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .home-mini-links a:hover{ color:var(--text); text-decoration:underline; }
+
+    .home-shortcuts{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .home-shortcuts .sc{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 8px;
+      text-align:center;
+      cursor:pointer;
+      transition:.15s;
+      background:#fff;
+    }
+
+    .home-shortcuts .sc:hover{ border-color:var(--home-primary); transform:translateY(-1px); }
+
+    .home-shortcuts .sico{
+      font-size:20px;
+      color:var(--home-primary);
+      margin-bottom:4px;
+    }
+
+    .home-shortcuts .stxt{
+      font-size:12px;
+      font-weight:1100;
+      color:#334155;
+    }
+
+    /* ---- Quick icons row (make them look like real tiles) ---- */
+    .quick-card{ padding:18px; height:100%; display:flex; flex-direction:column; }
+
+    .home-quick-row{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:16px;
+      flex:1;
+    }
+
+    @media (max-width: 980px){
+      .home-quick-row{ grid-template-columns: repeat(3, minmax(120px, 1fr)); }
+    }
+
+    @media (max-width: 520px){
+      .home-quick-row{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+    }
+
+    .home-quick{
+      border:1px solid #e2e8f0;
+      border-radius:20px;
+      padding:24px 16px;
+      text-align:center;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .home-quick:hover{ 
+      border-color:var(--primary); 
+      box-shadow:0 8px 24px rgba(3, 122, 63, 0.15);
+      transform:translateY(-4px);
+    }
+
+    .home-quick .ico{
+      width:64px;
+      height:64px;
+      border-radius:20px;
+      margin:0 auto 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:32px;
+      background:linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      box-shadow:0 4px 12px rgba(3, 122, 63, 0.1);
+    }
+
+    .home-quick .txt{
+      font-weight:700;
+      font-size:14px;
+      color:#1e293b;
+      letter-spacing:-0.2px;
+    }
+
+    /* ---- Notice card ---- */
+    .home-notice{ display:flex; flex-direction:column; height:100%; }
+    
+    .home-notice .notice-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+
+    .notice-head .ttl{ font-weight:1100; font-size:16px; }
+    .notice-head .more{ font-weight:1100; font-size:12px; color:var(--home-primary); cursor:pointer; }
+    .notice-head .more:hover{ text-decoration:underline; }
+
+    .notice-list{
+      padding:14px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+
+    .notice-item{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      font-weight:900;
+      color:#334155;
+      cursor:pointer;
+    }
+
+    .notice-tag{
+      font-size:11px;
+      font-weight:1100;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#eaf4ff;
+      color:#1d4ed8;
+      white-space:nowrap;
+    }
+
+    .notice-title{ font-size:13px; }
+    .notice-item:hover .notice-title{ text-decoration:underline; }
+
+    /* ---- CS ---- */
+    .home-cs{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      box-shadow:var(--shadow);
+      height:100%;
+    }
+
+    .cs-left{ display:flex; align-items:center; gap:14px; }
+
+    .cs-ico{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:var(--home-soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      color:var(--home-primary);
+    }
+
+    .cs-txt .cst{ margin:0; font-weight:1100; font-size:18px; }
+    .cs-txt .csh{ margin:4px 0 0 0; font-weight:900; font-size:12px; color:var(--muted); }
+
+    .cs-right{ text-align:right; }
+    .cs-right .num{ margin:0; font-size:30px; font-weight:1200; letter-spacing:-.5px; }
+    .cs-right .sub{ margin:4px 0 0 0; font-size:12px; font-weight:900; color:var(--muted); }
+
+    /* ---- Toast ---- */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:26px;
+      transform:translateX(-50%);
+      background:#0f172a;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:999px;
+      opacity:0;
+      pointer-events:none;
+      transition:.2s;
+      z-index:3000;
+    }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(-6px); }
+    .note-editor.note-frame{ border-radius:8px !important; border-color:#cbd5e1 !important; }
+    .note-statusbar{ display:none; }
+    .note-editing-area .note-editable{ border-radius:0 0 8px 8px; }
+    #adm-guide-txt, #adm-ship-txt{ 
+      width:100%; 
+      padding:10px; 
+      border:1px solid #cbd5e1; 
+      border-radius:8px; 
+      background:#f8fafc;
+      font-size:13px;
+      resize:vertical;
+      font-family:inherit;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header class="header">
+      <div class="header-top">
+        <div class="brand" onclick="goHome()">
+          <div class="brand-info" style="display:flex; align-items:center;">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='64' viewBox='0 0 240 64'><rect fill='none' width='240' height='64'/><defs><linearGradient id='nuGrad' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23d2611f'/><stop offset='100%' stop-color='%23e57a1f'/></linearGradient></defs><text x='2' y='44' fill='%23b42c44' font-family='Pretendard,Arial,sans-serif' font-size='42' font-weight='900' font-style='italic'>G</text><text x='38' y='44' fill='%231f3f75' font-family='Pretendard,Arial,sans-serif' font-size='32' font-weight='800' font-style='italic' letter-spacing='-0.1'>u</text><text x='56' y='44' fill='url(%23nuGrad)' font-family='Pretendard,Arial,sans-serif' font-size='32' font-weight='900' font-style='italic' letter-spacing='-0.08'>N</text><text x='83' y='44' fill='url(%23nuGrad)' font-family='Pretendard,Arial,sans-serif' font-size='32' font-weight='900' font-style='italic' letter-spacing='-0.08'>U</text><text x='123' y='44' fill='%231c6a3d' font-family='Pretendard,Arial,sans-serif' font-size='26' font-weight='800' font-style='italic' letter-spacing='0.05'>Printing</text></svg>" alt="GuNU Printing 로고" style="height:44px; width:auto; display:block;" />
+          </div>
+        </div>
+
+        <nav class="top-nav" id="nav-links"></nav>
+      </div>
+
+      <div class="header-bottom">
+        <button class="menu-btn" onclick="toggleFakeMenu()">☰</button>
+        <div class="cat-nav">
+          <a onclick="goHome()">전체상품</a>
+          <div class="cat-nav-item">
+            <a onclick="setCategory('indigo')">소량 인디고</a>
+            <div class="cat-dropdown">
+              <a onclick="setCategory('indigo', 'staple')">중철</a>
+              <a onclick="setCategory('indigo', 'perfect')">무선</a>
+            </div>
+          </div>
+          <a onclick="setCategory('digital')">흑백 디지털</a>
+          <a onclick="setCategory('offset')">대량 옵셋</a>
+          <a onclick="toast('안내장 준비중')">안내장</a>
+          <a onclick="toast('스티커 준비중')">스티커</a>
+          <a onclick="toast('실사출력 준비중')">실사출력</a>
+          <a onclick="toast('기타상품 준비중')">기타상품</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= HOME ================= -->
+    <div id="view-home">
+      <div class="home-grid">
+
+        <!-- Row 1: Slider / Login -->
+        <div class="home-row home-row-hero">
+          <div class="hero-left">
+            <div class="home-slider" id="home-slider">
+              <div class="home-slide active">
+                <img src="https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=1400&q=80" alt="slide1" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>프리미엄 견적 시스템</h2>
+                  <p>입력은 간단하게, 결과는 정확하게</p>
+                </div>
+              </div>
+
+              <div class="home-slide">
+                <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1400&q=80" alt="slide2" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>소량부터 대량까지</h2>
+                  <p>인디고 · 디지털 · 옵셋을 한 화면에서</p>
+                </div>
+              </div>
+
+              <div class="home-slide">
+                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=1400&q=80" alt="slide3" />
+                <div class="home-slide-overlay"></div>
+                <div class="home-slide-text">
+                  <h2>장바구니 + 주문 접수</h2>
+                  <p>사양/파일/배송을 한 번에 정리</p>
+                </div>
+              </div>
+
+              <div class="home-slider-ctrl">
+                <button onclick="homePrev()">‹</button>
+                <div class="home-pager" id="home-pager">1 / 3</div>
+                <button onclick="homeNext()">›</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card home-login-card" style="width:100%; max-width:370px; padding:18px 22px 16px 22px; box-sizing:border-box;">
+            <div class="card-body" style="padding:0;">
+              <form onsubmit="return login(event)">
+                <div style="margin-bottom:8px;">
+                  <input type="text" id="userId" placeholder="아이디" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius); font-size:14px; margin-bottom:6px;">
+                  <input type="password" id="userPassword" placeholder="비밀번호" style="width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius); font-size:14px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:10px 0; font-size:15px; font-weight:600; margin-bottom:8px;">로그인</button>
+              </form>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <a onclick="goFindAccount()" style="color:var(--muted); font-size:14px; font-weight:600; cursor:pointer;">ID·PW 찾기</a>
+                <a onclick="goSignup()" style="color:var(--muted); font-size:14px; font-weight:600; cursor:pointer;">회원가입</a>
+              </div>
+              <div class="home-shortcuts" style="margin-top:0;">
+                <div class="sc" onclick="goCart()"><div class="sico">🛒</div><div class="stxt">장바구니</div></div>
+                <div class="sc" onclick="toast('주문조회 준비중')"><div class="sico">📄</div><div class="stxt">주문조회</div></div>
+                <div class="sc" onclick="toast('작업유의 준비중')"><div class="sico">⚠️</div><div class="stxt">작업유의</div></div>
+                <div class="sc" onclick="toast('제품안내 준비중')"><div class="sico">📌</div><div class="stxt">제품안내</div></div>
+                <div class="sc" onclick="toast('FAQ 준비중')"><div class="sico">❓</div><div class="stxt">FAQ</div></div>
+                <div class="sc" onclick="showCS()"><div class="sico">☎️</div><div class="stxt">고객센터</div></div>
+                <div class="sc" onclick="toast('정보수정 준비중')"><div class="sico">👤</div><div class="stxt">정보수정</div></div>
+                <div class="sc" onclick="goAdmin()"><div class="sico">🛠️</div><div class="stxt">관리자</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Quick / Notice -->
+        <div class="home-row">
+          <div class="card">
+            <div class="quick-card">
+              <div class="home-quick-row">
+                <div class="home-quick" onclick="toast('당일판 안내 준비중')"><div class="ico">⏰</div><div class="txt">당일판</div></div>
+                <div class="home-quick" onclick="toast('묶음배송 안내 준비중')"><div class="ico">📦</div><div class="txt">묶음배송</div></div>
+                <div class="home-quick" onclick="toast('견적의뢰 준비중')"><div class="ico">🧾</div><div class="txt">견적의뢰</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card home-notice">
+            <div class="notice-head">
+              <div class="ttl">NOTICE</div>
+              <div class="more" onclick="toast('공지 더보기 준비중')">더보기</div>
+            </div>
+            <div class="notice-list">
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[일반공지]</span><span class="notice-title">2026년 새해인사</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">친환경 미니캘린더 출시</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">보안스티커 출시</span></div>
+              <div class="notice-item" onclick="toast('공지 상세 준비중')"><span class="notice-tag">[신제품공지]</span><span class="notice-title">포토퍼즐 출시</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: CS / Print Type -->
+        <div class="home-row">
+          <div>
+            <div class="home-cs">
+              <div class="cs-left">
+                <div class="cs-ico">🎧</div>
+                <div class="cs-txt">
+                  <p class="cst">C/S 센터</p>
+                  <p class="csh">월~금 09:00~18:30 / 토·일·공휴일 휴무</p>
+                </div>
+              </div>
+              <div class="cs-right">
+                <p class="num">062-225-1723</p>
+                <p class="sub">이메일: ms4012@daum.net</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h3 style="text-align:center; margin:0 0 12px 0; font-weight:1100;">인쇄 방식 선택</h3>
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+                <button class="btn btn-primary" onclick="toast('인디고(소량) 준비중')">인디고</button>
+                <button class="btn btn-secondary" onclick="toast('디지털(흑백) 준비중')">디지털</button>
+                <button class="btn btn-secondary" onclick="toast('옵셋(대량) 준비중')">옵셋</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= SIGNUP ================= -->
+    <div id="view-signup" style="display:none;">
+      <div class="card" style="max-width:700px; margin:0 auto;">
+        <div style="padding:14px 18px; border-bottom:1px solid var(--line); font-weight:1100; background:#f8fbff;">회원가입</div>
+        <div style="padding:18px;">
+          
+          <!-- [Step 1] 가입 유형 선택 -->
+          <div id="signup-step-1" style="text-align:center; padding:30px 0;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+              <!-- 일반회원 -->
+              <div onclick="startSignup('general')" style="padding:40px 20px; border:2px solid var(--line); border-radius:16px; cursor:pointer; transition:.2s; background:#fff; display:flex; flex-direction:column; align-items:center; gap:15px;" onmouseover="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 10px 30px rgba(3,122,63,0.1)'" onmouseout="this.style.borderColor='var(--line)'; this.style.boxShadow='none'">
+                <div style="font-size:48px; background:#f0fdf4; width:100px; height:100px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--primary);">👤</div>
+                <h4 style="font-size:20px; font-weight:1100; color:#0f172a; margin:0;">일반회원</h4>
+                <p style="font-size:14px; color:#64748b; margin:0;">개인 고객님을 위한<br>간편 회원가입</p>
+                <button class="btn btn-primary" style="width:auto; margin-top:10px; padding:8px 16px;">가입하기</button>
+              </div>
+              <!-- 사업자회원 -->
+              <div onclick="startSignup('business')" style="padding:40px 20px; border:2px solid var(--line); border-radius:16px; cursor:pointer; transition:.2s; background:#fff; display:flex; flex-direction:column; align-items:center; gap:15px;" onmouseover="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 10px 30px rgba(3,122,63,0.1)'" onmouseout="this.style.borderColor='var(--line)'; this.style.boxShadow='none'">
+                <div style="font-size:48px; background:#f0fdf4; width:100px; height:100px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--primary);">🏢</div>
+                <h4 style="font-size:20px; font-weight:1100; color:#0f172a; margin:0;">사업자회원</h4>
+                <p style="font-size:14px; color:#64748b; margin:0;">사업자 등록증 첨부 및<br>관리자 승인 필요</p>
+                <button class="btn btn-secondary" style="width:auto; margin-top:10px; padding:8px 16px;">가입하기</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- [Step 2] 정보 입력 -->
+          <div id="signup-step-2" style="display:none;">
+            <button class="btn btn-secondary" onclick="backToStep1()" style="margin-bottom:20px; background:#e2e8f0; color:#475569;">← 뒤로가기</button>
+            
+            <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">약관 동의</h3>
+            
+            <div style="margin-bottom:20px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; cursor:pointer;" onclick="toggleAllTerms()">
+                <input type="checkbox" id="check-all" style="width:18px; height:18px;">
+                <label for="check-all" style="font-size:14px; font-weight:1100; color:#333; margin:0; cursor:pointer;">약관 전체 동의</label>
+              </div>
+
+              <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">이용약관 [필수]</label>
+              <textarea readonly style="width:100%; height:150px; overflow-y:auto; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:15px; font-size:12px; color:#475569; line-height:1.6; margin-bottom:8px; resize:none;">이용약관에 동의합니다. 자세한 내용은 사이트를 참고하세요.</textarea>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
+                <input type="checkbox" id="term1" style="width:18px; height:18px;">
+                <label for="term1" style="font-size:13px; font-weight:600; margin:0; cursor:pointer;">이용약관에 동의합니다.</label>
+              </div>
+
+              <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">개인정보 수집 [필수]</label>
+              <textarea readonly style="width:100%; height:150px; overflow-y:auto; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:15px; font-size:12px; color:#475569; line-height:1.6; margin-bottom:8px; resize:none;">개인정보 수집 및 이용에 동의합니다. 자세한 내용은 사이트를 참고하세요.</textarea>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
+                <input type="checkbox" id="term2" style="width:18px; height:18px;">
+                <label for="term2" style="font-size:13px; font-weight:600; margin:0; cursor:pointer;">개인정보 수집에 동의합니다.</label>
+              </div>
+            </div>
+
+            <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">로그인 정보</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+              <div style="grid-column:span 2; display:flex; gap:10px;">
+                <input type="text" id="sign-id" placeholder="아이디" style="flex:1; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+                <button class="btn btn-secondary" onclick="checkIdDuplicate()" style="width:100px; padding:10px; font-size:12px;">중복확인</button>
+              </div>
+              <div><input type="password" id="sign-pw" placeholder="비밀번호" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+              <div><input type="password" id="sign-pw2" placeholder="비밀번호 확인" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+            </div>
+
+            <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">회원 정보</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+              <div><input type="text" id="sign-name" placeholder="이름" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+              <div><input type="text" id="sign-phone" placeholder="휴대폰번호" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+              <div style="grid-column:span 2; display:flex; gap:10px;">
+                <input type="text" id="sign-addr" placeholder="주소" readonly onclick="openAddressSearch()" style="flex:1; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; cursor:pointer;">
+                <button class="btn btn-secondary" onclick="openAddressSearch()" style="width:100px; padding:10px; font-size:12px;">주소검색</button>
+              </div>
+              <div style="grid-column:span 2;"><input type="text" id="sign-addr-detail" placeholder="상세주소" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+            </div>
+
+            <!-- 사업자 영역 -->
+            <div id="area-business" style="display:none; background:#f8fafc; padding:15px; border-radius:8px; margin-bottom:20px;">
+              <h3 style="font-weight:1100; margin:0 0 12px 0; color:var(--primary);">사업자 정보 (승인 필요)</h3>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <div><input type="text" id="sign-biz-name" placeholder="상호명" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+                <div><input type="text" id="sign-biz-num" placeholder="사업자등록번호" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;"></div>
+                <div style="grid-column:span 2;">
+                  <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">사업자등록증 첨부</label>
+                  <input type="file" id="sign-biz-file" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; width:100%;">
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="submitSignup()" style="margin-top:20px;">가입하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= LOGIN ================= -->
+    <div id="view-login" style="display:none;">
+      <div class="card" style="max-width:400px; margin:50px auto; text-align:center;">
+        <div style="padding:14px 18px; border-bottom:1px solid var(--line); font-weight:1100; background:#f8fbff;">로그인</div>
+        <div style="padding:18px;">
+          <input type="text" id="login-id" placeholder="아이디" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; margin-bottom:10px;">
+          <input type="password" id="login-pw" placeholder="비밀번호" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; margin-bottom:20px;">
+          <button class="btn btn-primary" onclick="login()">로그인</button>
+          <div style="margin-top:15px; font-size:13px; color:#64748b;">
+            계정이 없으신가요? <a onclick="goSignup()" style="color:var(--home-primary); cursor:pointer; font-weight:1100;">회원가입</a>
+            <span style="margin:0 8px; color:#e6edf3;">|</span>
+            <a onclick="goFindAccount()" style="color:var(--home-primary); cursor:pointer; font-weight:1100;">ID·PW 찾기</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= FIND ACCOUNT ================= -->
+    <div id="view-find" style="display:none;">
+      <div style="max-width:500px; margin:50px auto;">
+        <div class="card">
+          <div style="padding:14px 18px; border-bottom:1px solid var(--line); font-weight:1100; background:#f8fbff; display:flex; justify-content:space-between; align-items:center;">
+            <span>ID·PW 찾기</span>
+            <button onclick="goLogin()" style="border:none; background:none; font-size:20px; cursor:pointer; color:#64748b;">✕</button>
+          </div>
+          <div style="padding:18px;">
+            <!-- 탭 버튼 -->
+            <div style="display:flex; gap:10px; margin-bottom:20px; background:#f8fafc; padding:5px; border-radius:8px;">
+              <button id="find-id-tab" class="btn" onclick="switchFindTab('id')" style="flex:1; padding:10px; background:var(--home-primary); color:#fff; font-weight:1000; border:none;">아이디 찾기</button>
+              <button id="find-pw-tab" class="btn" onclick="switchFindTab('pw')" style="flex:1; padding:10px; background:#fff; color:#64748b; font-weight:1000; border:none;">비밀번호 찾기</button>
+            </div>
+
+            <!-- 아이디 찾기 -->
+            <div id="find-id-panel">
+              <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px; font-size:14px;">가입 시 입력한 정보를 입력해주세요</h3>
+              <div style="margin-bottom:15px;">
+                <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">이름</label>
+                <input type="text" id="find-id-name" placeholder="이름" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+              </div>
+              <div style="margin-bottom:20px;">
+                <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">휴대폰번호</label>
+                <input type="text" id="find-id-phone" placeholder="010-0000-0000" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+              </div>
+              <button class="btn btn-primary" onclick="findId()">아이디 찾기</button>
+              <div id="find-id-result" style="margin-top:20px; display:none; padding:15px; background:#ecfdf5; border:1px solid #10b981; border-radius:8px; text-align:center;">
+                <p style="margin:0 0 8px 0; font-size:12px; color:#064e3b; font-weight:600;">회원님의 아이디는</p>
+                <p style="margin:0; font-size:18px; color:#047857; font-weight:1000;" id="found-id"></p>
+              </div>
+            </div>
+
+            <!-- 비밀번호 찾기 -->
+            <div id="find-pw-panel" style="display:none;">
+              <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px; font-size:14px;">가입 시 입력한 정보를 입력해주세요</h3>
+              <div style="margin-bottom:15px;">
+                <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">아이디</label>
+                <input type="text" id="find-pw-id" placeholder="아이디" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+              </div>
+              <div style="margin-bottom:15px;">
+                <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">이름</label>
+                <input type="text" id="find-pw-name" placeholder="이름" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+              </div>
+              <div style="margin-bottom:20px;">
+                <label style="display:block; font-weight:700; font-size:12px; margin-bottom:6px; color:#475569;">휴대폰번호</label>
+                <input type="text" id="find-pw-phone" placeholder="010-0000-0000" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px;">
+              </div>
+              <button class="btn btn-primary" onclick="findPassword()">비밀번호 찾기</button>
+              <div id="find-pw-result" style="margin-top:20px; display:none; padding:15px; background:#ecfdf5; border:1px solid #10b981; border-radius:8px; text-align:center;">
+                <p style="margin:0 0 8px 0; font-size:12px; color:#064e3b; font-weight:600;">회원님의 비밀번호는</p>
+                <p style="margin:0; font-size:18px; color:#047857; font-weight:1000;" id="found-pw"></p>
+              </div>
+            </div>
+
+            <div style="margin-top:20px; text-align:center;">
+              <button class="btn" onclick="goLogin()" style="background:#e2e8f0; color:#64748b; border:none;">로그인 페이지로</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= CART ================= -->
+    <div id="view-cart" style="display:none;">
+      <h2 style="margin-top:0;">장바구니 확인</h2>
+      <div id="cart-list" style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;"></div>
+      <div style="background:white; border-radius:var(--radius); padding:18px; border:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:13px; color:#64748b;">
+          <span>총 상품금액</span><strong id="ct-price" style="color:#0f172a;">0원</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:13px; color:#64748b;">
+          <span>총 배송비</span><strong id="ct-ship" style="color:#0f172a;">0원</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding-top:10px; border-top:1px dashed var(--line); margin-bottom:20px; font-weight:1100;">
+          <span>총 결제예정금액</span><strong id="ct-total" style="color:#0f172a;">0원</strong>
+        </div>
+        <button class="btn btn-primary" onclick="submitOrder()">주문하기</button>
+      </div>
+    </div>
+
+    <!-- ================= QUOTATION (CALCULATOR) ================= -->
+    <div id="view-quotation" style="display:none;">
+      <div style="max-width:1400px; margin:0 auto; padding:20px;">
+
+        <div style="display:grid; grid-template-columns:280px 1fr 340px; gap:20px; align-items:start;">
+          
+          <!-- 좌측: 상품 이미지-->
+          <div>
+            <div style="border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#f1f5f9; height:240px;">
+              <img
+                id="quote-indigo-img"
+                src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%231f7ea9'/><stop offset='100%' stop-color='%23037a3f'/></linearGradient></defs><rect width='800' height='600' fill='url(%23grad)'/><circle cx='640' cy='140' r='90' fill='rgba(255,255,255,0.12)'/><circle cx='180' cy='480' r='70' fill='rgba(255,255,255,0.1)'/><text x='60' y='320' fill='white' font-family='Pretendard,Arial,sans-serif' font-size='58' font-weight='900'>Indigo Printing</text><text x='60' y='380' fill='white' opacity='0.9' font-family='Pretendard,Arial,sans-serif' font-size='26'>소량 인디고 견적</text></svg>"
+                alt="인디고"
+                style="width:100%; height:100%; object-fit:cover; display:block;"
+              >
+            </div>
+            <div style="margin-top:12px; font-size:11px; color:#64748b; text-align:center;">#HP_Indigo</div>
+          </div>
+
+          <!-- 중앙: 옵션 입력 -->
+          <div>
+            <div style="padding:0;">
+              <!-- 기본 사양 섹션 -->
+              <div style="padding-bottom:18px; margin-bottom:18px; border-bottom:2px solid #e2e8f0;">
+                <div style="font-weight:800; font-size:16px; margin-bottom:16px; color:var(--text); border-left:4px solid var(--primary); padding-left:12px;">기본 사양</div>
+                
+                <div style="margin-bottom:14px; display:none;">
+                  <label style="display:block; font-weight:700; font-size:13px; margin-bottom:8px; color:#475569;">제본</label>
+                  <div style="display:flex; gap:12px;">
+                    <label style="flex:1; padding:12px 16px; border:2px solid var(--primary); border-radius:8px; background:#ecfdf5; cursor:pointer; font-size:14px; text-align:center; font-weight:600; color:var(--primary);">
+                      <input type="radio" name="ind-bind" value="staple" checked style="display:none;"> 중철
+                    </label>
+                    <label style="flex:1; padding:12px 16px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; cursor:pointer; font-size:14px; text-align:center; font-weight:600;">
+                      <input type="radio" name="ind-bind" value="perfect" style="display:none;"> 무선
+                    </label>
+                  </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                  <div>
+                    <label style="display:block; font-weight:700; font-size:13px; margin-bottom:8px; color:#475569;">사이즈</label>
+                    <select id="ind-bookSize" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px; font-weight:600;">
+                      <option value="A4">A4</option>
+                      <option value="A5">A5</option>
+                      <option value="B5">B5</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="display:block; font-weight:700; font-size:13px; margin-bottom:8px; color:#475569;">부수</label>
+                    <input type="number" id="ind-qty" value="" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px; font-weight:600;">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 용지/인쇄 섹션 -->
+              <div style="padding-bottom:18px; margin-bottom:18px; border-bottom:2px solid #e2e8f0;">
+                <div style="font-weight:800; font-size:16px; margin-bottom:16px; color:var(--text); border-left:4px solid var(--primary); padding-left:12px;">용지/인쇄</div>
+                
+                <!-- 표지 -->
+                <div style="margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
+                  <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:#1e293b; border-bottom:2px solid var(--primary); padding-bottom:8px;">📌 표지</div>
+                  
+                  <!-- 표지 페이지 -->
+                  <div style="margin-bottom:14px;">
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">표지 페이지</label>
+                    <select id="ind-coverPages" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px; font-weight:600;">
+                      <option value="2" selected>2p</option>
+                      <option value="4">4p</option>
+                    </select>
+                  </div>
+
+                  <div style="display:flex; gap:12px; margin-bottom:14px;">
+                    <select id="ind-coverType" style="flex:1; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px;"></select>
+                    <select id="ind-coverGram" style="width:120px; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px;"></select>
+                  </div>
+
+                  <!-- 표지 인쇄 -->
+                  <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">표지 인쇄</label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-size:13px; text-align:center;">
+                        <input type="radio" name="ind-coverPrint" value="1" style="display:none;"> 단면
+                      </label>
+                      <label style="flex:1; padding:10px 14px; border:2px solid var(--primary); border-radius:6px; background:#ecfdf5; cursor:pointer; font-size:13px; text-align:center; color:var(--primary); font-weight:600;">
+                        <input type="radio" name="ind-coverPrint" value="2" checked style="display:none;"> 양면
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- 표지 색상 -->
+                  <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">표지 색상</label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:10px 14px; border:2px solid var(--primary); border-radius:6px; background:#ecfdf5; cursor:pointer; font-size:13px; text-align:center; font-weight:600; color:var(--primary);">
+                        <input type="radio" name="ind-coverColor" value="color" checked style="display:none;"> 칼라
+                      </label>
+                      <label style="flex:1; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-size:13px; text-align:center;">
+                        <input type="radio" name="ind-coverColor" value="mono" style="display:none;"> 흑백
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- 표지 코팅 -->
+                  <div>
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">표지 코팅</label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:10px 14px; border:2px solid var(--primary); border-radius:6px; background:#ecfdf5; cursor:pointer; font-size:13px; text-align:center; color:var(--primary); font-weight:600;">
+                        <input type="radio" name="ind-coat" value="0" checked style="display:none;"> 없음
+                      </label>
+                      <label style="flex:1; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-size:13px; text-align:center;">
+                        <input type="radio" name="ind-coat" value="1" style="display:none;"> 있음
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 내지 -->
+                <div>
+                  <div style="font-weight:700; font-size:14px; margin-bottom:10px; color:#1e293b; border-bottom:2px solid var(--primary); padding-bottom:8px;">📌 내지</div>
+                  
+                  <!-- 내지 페이지 -->
+                  <div style="margin-bottom:14px;">
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">내지 페이지</label>
+                    <select id="ind-innerPages" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px; font-weight:600;">
+                      <option value="4">4페이지</option>
+                      <option value="8">8페이지</option>
+                      <option value="12">12페이지</option>
+                      <option value="16">16페이지</option>
+                      <option value="20" selected>20페이지</option>
+                      <option value="24">24페이지</option>
+                      <option value="28">28페이지</option>
+                      <option value="32">32페이지</option>
+                      <option value="36">36페이지</option>
+                      <option value="40">40페이지</option>
+                      <option value="44">44페이지</option>
+                      <option value="48">48페이지</option>
+                      <option value="52">52페이지</option>
+                      <option value="56">56페이지</option>
+                      <option value="60">60페이지</option>
+                      <option value="64">64페이지</option>
+                      <option value="68">68페이지</option>
+                      <option value="72">72페이지</option>
+                      <option value="76">76페이지</option>
+                      <option value="80">80페이지</option>
+                      <option value="84">84페이지</option>
+                      <option value="88">88페이지</option>
+                      <option value="92">92페이지</option>
+                      <option value="96">96페이지</option>
+                      <option value="100">100페이지</option>
+                      <option value="104">104페이지</option>
+                      <option value="108">108페이지</option>
+                      <option value="112">112페이지</option>
+                      <option value="116">116페이지</option>
+                      <option value="120">120페이지</option>
+                      <option value="124">124페이지</option>
+                      <option value="128">128페이지</option>
+                      <option value="132">132페이지</option>
+                      <option value="136">136페이지</option>
+                      <option value="140">140페이지</option>
+                      <option value="144">144페이지</option>
+                      <option value="148">148페이지</option>
+                      <option value="152">152페이지</option>
+                      <option value="156">156페이지</option>
+                      <option value="160">160페이지</option>
+                      <option value="164">164페이지</option>
+                      <option value="168">168페이지</option>
+                      <option value="172">172페이지</option>
+                      <option value="176">176페이지</option>
+                      <option value="180">180페이지</option>
+                      <option value="184">184페이지</option>
+                      <option value="188">188페이지</option>
+                      <option value="192">192페이지</option>
+                      <option value="196">196페이지</option>
+                      <option value="200">200페이지</option>
+                      <option value="204">204페이지</option>
+                      <option value="208">208페이지</option>
+                      <option value="212">212페이지</option>
+                      <option value="216">216페이지</option>
+                      <option value="220">220페이지</option>
+                      <option value="224">224페이지</option>
+                      <option value="228">228페이지</option>
+                      <option value="232">232페이지</option>
+                      <option value="236">236페이지</option>
+                      <option value="240">240페이지</option>
+                      <option value="244">244페이지</option>
+                      <option value="248">248페이지</option>
+                      <option value="252">252페이지</option>
+                      <option value="256">256페이지</option>
+                      <option value="260">260페이지</option>
+                      <option value="264">264페이지</option>
+                      <option value="268">268페이지</option>
+                      <option value="272">272페이지</option>
+                      <option value="276">276페이지</option>
+                      <option value="280">280페이지</option>
+                      <option value="284">284페이지</option>
+                      <option value="288">288페이지</option>
+                      <option value="292">292페이지</option>
+                      <option value="296">296페이지</option>
+                      <option value="300">300페이지</option>
+                      <option value="304">304페이지</option>
+                      <option value="308">308페이지</option>
+                      <option value="312">312페이지</option>
+                      <option value="316">316페이지</option>
+                      <option value="320">320페이지</option>
+                      <option value="324">324페이지</option>
+                      <option value="328">328페이지</option>
+                      <option value="332">332페이지</option>
+                      <option value="336">336페이지</option>
+                      <option value="340">340페이지</option>
+                      <option value="344">344페이지</option>
+                      <option value="348">348페이지</option>
+                      <option value="352">352페이지</option>
+                      <option value="356">356페이지</option>
+                      <option value="360">360페이지</option>
+                      <option value="364">364페이지</option>
+                      <option value="368">368페이지</option>
+                      <option value="372">372페이지</option>
+                      <option value="376">376페이지</option>
+                      <option value="380">380페이지</option>
+                      <option value="384">384페이지</option>
+                      <option value="388">388페이지</option>
+                      <option value="392">392페이지</option>
+                      <option value="396">396페이지</option>
+                      <option value="400">400페이지</option>
+                      <option value="404">404페이지</option>
+                      <option value="408">408페이지</option>
+                      <option value="412">412페이지</option>
+                      <option value="416">416페이지</option>
+                      <option value="420">420페이지</option>
+                      <option value="424">424페이지</option>
+                      <option value="428">428페이지</option>
+                      <option value="432">432페이지</option>
+                      <option value="436">436페이지</option>
+                      <option value="440">440페이지</option>
+                      <option value="444">444페이지</option>
+                      <option value="448">448페이지</option>
+                      <option value="452">452페이지</option>
+                      <option value="456">456페이지</option>
+                      <option value="460">460페이지</option>
+                      <option value="464">464페이지</option>
+                      <option value="468">468페이지</option>
+                      <option value="472">472페이지</option>
+                      <option value="476">476페이지</option>
+                      <option value="480">480페이지</option>
+                      <option value="484">484페이지</option>
+                      <option value="488">488페이지</option>
+                      <option value="492">492페이지</option>
+                      <option value="496">496페이지</option>
+                      <option value="500">500페이지</option>
+                    </select>
+                  </div>
+
+                  <div style="display:flex; gap:12px; margin-bottom:14px;">
+                    <select id="ind-innerType" style="flex:1; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px;"></select>
+                    <select id="ind-innerGram" style="width:120px; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:14px;"></select>
+                  </div>
+
+                  <!-- 내지 인쇄 -->
+                  <div style="margin-bottom:12px;">
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">내지 인쇄</label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-size:13px; text-align:center;">
+                        <input type="radio" name="ind-innerPrint" value="1" style="display:none;"> 단면
+                      </label>
+                      <label style="flex:1; padding:10px 14px; border:2px solid var(--primary); border-radius:6px; background:#ecfdf5; cursor:pointer; font-size:13px; text-align:center; color:var(--primary); font-weight:600;">
+                        <input type="radio" name="ind-innerPrint" value="2" checked style="display:none;"> 양면
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- 내지 색상 -->
+                  <div>
+                    <label style="font-size:12px; color:#64748b; display:block; margin-bottom:8px; font-weight:700;">내지 색상</label>
+                    <div style="display:flex; gap:10px;">
+                      <label style="flex:1; padding:10px 14px; border:2px solid var(--primary); border-radius:6px; background:#ecfdf5; cursor:pointer; font-size:13px; text-align:center; font-weight:600; color:var(--primary);">
+                        <input type="radio" name="ind-innerColor" value="color" checked style="display:none;"> 칼라
+                      </label>
+                      <label style="flex:1; padding:10px 14px; border:1px solid #cbd5e1; border-radius:6px; background:#fff; cursor:pointer; font-size:13px; text-align:center;">
+                        <input type="radio" name="ind-innerColor" value="mono" style="display:none;"> 흑백
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 견적 산출 -->
+              <div style="margin-top:18px;">
+                <button class="btn btn-primary" onclick="calculateIndigo()" style="width:100%; padding:14px; font-size:15px; font-weight:700;">견적 산출</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측: 견적 요약서 -->
+          <div style="position:sticky; top:70px; height:fit-content; align-self:start;">
+            <div style="background:#1a2332; color:#fff; border-radius:16px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+              <div style="font-weight:700; font-size:13px; margin-bottom:20px; color:#cbd5e1;">견적 요약서</div>
+              
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px; color:#cbd5e1;">
+                <span>카테고리</span>
+                <strong style="color:#f8fafc;" id="sum-cat">-</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px; color:#cbd5e1;">
+                <span>수량</span>
+                <strong style="color:#f8fafc;" id="sum-qty">-</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px; color:#cbd5e1;">
+                <span>공급가</span>
+                <strong style="color:#f8fafc;" id="sum-supply">-</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px; color:#cbd5e1;">
+                <span>부가세</span>
+                <strong style="color:#f8fafc;" id="sum-vat">-</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:12px 0; border-top:1px dashed rgba(203,213,227,.2); border-bottom:1px dashed rgba(203,213,227,.2); margin-bottom:16px; font-size:13px; color:#cbd5e1;">
+                <span>배송비</span>
+                <strong style="color:#f8fafc;" id="sum-ship">-</strong>
+              </div>
+              
+              <div style="text-align:center; padding:12px; background:rgba(16,185,129,.1); border-radius:8px; margin-bottom:18px;">
+                <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px;">최종 합계</div>
+                <div style="font-size:28px; font-weight:900; color:#10b981;" id="sum-total">0원</div>
+              </div>
+
+              <button class="btn btn-primary" onclick="calculateIndigo(); addToCart();" style="width:100%; padding:12px; margin-bottom:8px; font-weight:700;">장바구니 담기</button>
+              <button class="btn" style="width:100%; padding:12px; background:#334155; color:#fff; border:none; font-weight:700;" onclick="toast('문의 기능 준비중')">💬 문의하기</button>
+            </div>
+
+            <!-- 파일 첨부 영역 -->
+            <div style="background:#1a2332; color:#fff; border-radius:16px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.2); margin-top:16px;">
+              <div style="font-weight:700; font-size:13px; margin-bottom:12px; color:#cbd5e1;">📎 파일 첨부</div>
+              <div style="font-size:11px; color:#94a3b8; margin-bottom:10px;">인쇄할 파일을 첨부하세요 (PDF, AI, PSD 등)</div>
+              
+              <input type="file" id="quote-file-input" multiple accept=".pdf,.ai,.psd,.jpg,.jpeg,.png,.zip" style="display:none;" onchange="handleQuoteFileUpload(event)">
+              <button onclick="document.getElementById('quote-file-input').click()" style="width:100%; padding:10px; background:#334155; color:#cbd5e1; border:1px dashed #475569; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.3s;">
+                📁 파일 선택하기
+              </button>
+              
+              <div id="quote-file-list" style="margin-top:10px; max-height:150px; overflow-y:auto;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================= 상품 상세 탭 ================= -->
+      <div style="max-width:1200px; margin:40px auto; padding:0 20px;">
+        <!-- 탭 네비게이션 -->
+        <div style="border-bottom:2px solid #e2e8f0; margin-bottom:30px;">
+          <div style="display:flex; gap:0;">
+            <button id="tab-detail-btn" onclick="switchProductTab('detail')" style="flex:1; padding:16px; font-size:15px; font-weight:600; background:#f1f5f9; color:#64748b; border:none; border-top-left-radius:8px; border-top-right-radius:8px; cursor:pointer; transition:all 0.3s;">
+              상세설명
+            </button>
+            <button id="tab-guide-btn" onclick="switchProductTab('guide')" style="flex:1; padding:16px; font-size:15px; font-weight:600; background:#f1f5f9; color:#64748b; border:none; border-top-left-radius:8px; border-top-right-radius:8px; cursor:pointer; transition:all 0.3s;">
+              가이드
+            </button>
+            <button id="tab-shipping-btn" onclick="switchProductTab('shipping')" style="flex:1; padding:16px; font-size:15px; font-weight:600; background:#f1f5f9; color:#64748b; border:none; border-top-left-radius:8px; border-top-right-radius:8px; cursor:pointer; transition:all 0.3s;">
+              배송안내
+            </button>
+          </div>
+        </div>
+
+        <!-- 탭 콘텐츠 -->
+        <div id="tab-detail-content" style="display:none;">
+          <div style="background:#fff; border-radius:12px; padding:30px;">
+            <h2 style="font-size:20px; font-weight:900; color:#0f172a; margin:0 0 20px 0; border-left:4px solid var(--primary); padding-left:12px;">상품 상세설명</h2>
+            
+            <div style="line-height:1.8; color:#475569;">
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">💼 무선제본이란?</h3>
+              <p style="margin:0 0 16px 0;">무선제본은 책의 등을 접착제로 고정하는 제본 방식으로, 전문적이고 깔끔한 마감을 제공합니다. 카탈로그, 매뉴얼, 보고서 등 다양한 용도로 활용됩니다.</p>
+              
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">✨ 주요 특징</h3>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li>전문적이고 고급스러운 마감</li>
+                <li>다양한 용지 및 코팅 옵션</li>
+                <li>내구성이 우수한 접착 방식</li>
+                <li>페이지 수에 따라 유연한 제작</li>
+              </ul>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">📋 권장 용도</h3>
+              <ul style="margin:0; padding-left:20px;">
+                <li>기업 카탈로그 및 브로셔</li>
+                <li>제품 매뉴얼</li>
+                <li>보고서 및 논문</li>
+                <li>잡지 및 소책자</li>
+                <li>교육 자료</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-guide-content" style="display:none;">
+          <div style="background:#fff; border-radius:12px; padding:30px;">
+            <h2 style="font-size:20px; font-weight:900; color:#0f172a; margin:0 0 20px 0; border-left:4px solid var(--primary); padding-left:12px;">제작 가이드</h2>
+            
+            <div style="line-height:1.8; color:#475569;">
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">📐 사이즈 선택 가이드</h3>
+              <p style="margin:0 0 16px 0;">용도에 맞는 적절한 사이즈를 선택하세요:</p>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li><strong>A4 (210x297mm):</strong> 가장 일반적인 사이즈, 보고서·매뉴얼에 적합</li>
+                <li><strong>B5 (182x257mm):</strong> 휴대가 편리한 중간 사이즈</li>
+                <li><strong>A5 (148x210mm):</strong> 소책자·팜플렛에 적합</li>
+                <li><strong>국배판 (210x285mm):</strong> 잡지형 제작에 최적</li>
+              </ul>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">🎨 용지 및 코팅 선택</h3>
+              <p style="margin:0 0 16px 0;"><strong>표지 용지:</strong></p>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li>스노우지: 부드럽고 고급스러운 질감</li>
+                <li>아트지: 선명한 인쇄 품질</li>
+                <li>모조지: 자연스러운 느낌</li>
+              </ul>
+              
+              <p style="margin:0 0 16px 0;"><strong>코팅 옵션:</strong></p>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li>무코팅: 자연스러운 질감</li>
+                <li>유광코팅: 선명하고 광택 있는 마감</li>
+                <li>무광코팅: 은은하고 고급스러운 마감</li>
+                <li>양면코팅: 양면 모두 코팅 처리</li>
+              </ul>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">💡 제작 팁</h3>
+              <ul style="margin:0; padding-left:20px;">
+                <li>파일은 PDF 형식으로 준비해주세요</li>
+                <li>재단선 기준 상하좌우 3mm 여백을 확보해주세요</li>
+                <li>중요한 내용은 재단선에서 5mm 이상 떨어뜨려주세요</li>
+                <li>컬러 모드는 CMYK로 설정해주세요</li>
+                <li>해상도는 300dpi 이상 권장합니다</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-shipping-content" style="display:none;">
+          <div style="background:#fff; border-radius:12px; padding:30px;">
+            <h2 style="font-size:20px; font-weight:900; color:#0f172a; margin:0 0 20px 0; border-left:4px solid var(--primary); padding-left:12px;">배송 안내</h2>
+            
+            <div style="line-height:1.8; color:#475569;">
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">🚚 배송 방법</h3>
+              <p style="margin:0 0 16px 0;">전국 택배 배송을 이용하며, 주문 확정 후 제작 기간에 따라 배송됩니다.</p>
+              
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">⏱️ 제작 및 배송 기간</h3>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li><strong>일반 제작:</strong> 입금 확인 후 3~5 영업일 소요</li>
+                <li><strong>당일 출고:</strong> 오전 12시 이전 주문 시 당일 발송 (별도 문의)</li>
+                <li><strong>배송:</strong> 출고 후 1~2일 소요 (도서산간 지역 2~3일)</li>
+              </ul>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">💰 배송비 안내</h3>
+              <ul style="margin:0 0 16px 0; padding-left:20px;">
+                <li>기본 배송비: 3,000원</li>
+                <li>50,000원 이상 주문 시 무료 배송</li>
+                <li>제주도 및 도서산간 지역: 추가 비용 발생 가능</li>
+              </ul>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">📞 배송 문의</h3>
+              <p style="margin:0 0 8px 0;">배송 관련 문의사항은 고객센터로 연락주세요.</p>
+              <div style="background:#f8fafc; padding:16px; border-radius:8px; border-left:4px solid var(--primary);">
+                <p style="margin:0; font-weight:700; color:#0f172a;">고객센터: 062-225-1723</p>
+                <p style="margin:4px 0 0 0; font-size:14px; color:#64748b;">운영시간: 평일 09:00 ~ 18:30</p>
+              </div>
+
+              <h3 style="font-size:16px; font-weight:700; color:#0f172a; margin:24px 0 12px 0;">🔄 교환 및 반품</h3>
+              <ul style="margin:0; padding-left:20px;">
+                <li>제작 오류가 있는 경우 100% 재제작 또는 환불</li>
+                <li>고객 변심으로 인한 반품은 제작 전에만 가능</li>
+                <li>인쇄물 특성상 제작 후 단순 변심 반품 불가</li>
+                <li>파일 오류로 인한 재제작은 고객 부담</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= CUSTOMER SERVICE MODAL ================= -->
+    <div id="view-cs" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:2000;">
+      <div class="card" style="max-width:500px; width:90%; max-height:80vh; overflow-y:auto;">
+        <div style="padding:14px 18px; border-bottom:1px solid var(--line); font-weight:1100; background:#f8fbff; display:flex; justify-content:space-between; align-items:center;">
+          고객센터
+          <button onclick="hideCS()" style="border:none; background:none; font-size:20px; cursor:pointer;">✕</button>
+        </div>
+        <div style="padding:18px;">
+          <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">문의 안내</h3>
+          <div style="background:#f8fafc; border-radius:14px; padding:16px; margin-bottom:20px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+              <span style="font-size:20px;">☎️</span>
+              <div>
+                <p style="margin:0; font-weight:1100; color:#0f172a;">전화 상담</p>
+                <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">1688-4152</p>
+              </div>
+            </div>
+            <div style="font-size:12px; color:#64748b; margin-top:12px;">
+              <p style="margin:0; font-weight:600;">운영시간</p>
+              <p style="margin:4px 0 0 0;">월~금: 09:00 ~ 18:30</p>
+              <p style="margin:2px 0 0 0;">토·일·공휴일: 휴무</p>
+            </div>
+          </div>
+
+          <h3 style="font-weight:1100; margin:0 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">자주 묻는 질문</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div onclick="toast('상세 답변 준비중')" style="padding:12px; border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:.15s; background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+              <p style="margin:0; font-weight:700; font-size:13px; color:#0f172a;">배송은 얼마나 걸리나요?</p>
+              <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">일반적으로 2~3일 소요됩니다.</p>
+            </div>
+            <div onclick="toast('상세 답변 준비중')" style="padding:12px; border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:.15s; background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+              <p style="margin:0; font-weight:700; font-size:13px; color:#0f172a;">파일 형식은 어떻게 되나요?</p>
+              <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">PDF, AI, PSD 등을 지원합니다.</p>
+            </div>
+            <div onclick="toast('상세 답변 준비중')" style="padding:12px; border:1px solid var(--line); border-radius:8px; cursor:pointer; transition:.15s; background:#fff;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+              <p style="margin:0; font-weight:700; font-size:13px; color:#0f172a;">환불은 어떻게 하나요?</p>
+              <p style="margin:4px 0 0 0; font-size:12px; color:#64748b;">배송 전 환불 가능합니다.</p>
+            </div>
+          </div>
+
+          <h3 style="font-weight:1100; margin:20px 0 12px 0; border-left:4px solid var(--primary); padding-left:8px;">문의 남기기</h3>
+          <textarea placeholder="문의 내용을 입력해주세요..." id="cs-message" style="width:100%; height:100px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; background:#f8fafc; font-size:13px; resize:none; margin-bottom:10px;"></textarea>
+          <button class="btn btn-primary" onclick="submitCS()">문의 전송</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 관리자 페이지 -->
+    <div id="view-admin" style="display:none;">
+      <div style="max-width:600px; margin:40px auto; text-align:center;">
+        <div class="card" style="background:#f8fbff; border:2px solid var(--home-primary);">
+          <div style="padding:30px 18px;">
+            <h2 style="margin:0 0 10px 0; color:var(--home-primary);">🛠️ 관리자 로그인</h2>
+            <p style="margin:0 0 20px 0; color:#64748b; font-size:13px;">관리자 비밀번호를 입력해주세요</p>
+            
+            <input type="password" id="admin-pw" placeholder="비밀번호 (1234)" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; font-size:14px; margin-bottom:14px;">
+            
+            <button class="btn btn-primary" onclick="adminLogin()">관리자 접속</button>
+            <button class="btn" style="background:#e2e8f0; color:#64748b; border:none; margin-top:8px;" onclick="goHome()">뒤로가기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 관리자 패널 (숨겨짐) -->
+      <div id="admin-panel" style="display:none; max-width:900px; margin:20px auto;">
+        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+          <button class="btn" style="background:var(--home-primary); color:#fff; border:none; flex:1; min-width:150px;" onclick="showAdminTab('adm-orders')">📊 주문 관리</button>
+          <button class="btn" style="background:#64748b; color:#fff; border:none; flex:1; min-width:150px;" onclick="showAdminTab('adm-content')">📝 상품 관리</button>
+          <button class="btn" style="background:#64748b; color:#fff; border:none; flex:1; min-width:150px;" onclick="showAdminTab('adm-users')">👥 회원 관리</button>
+          <button class="btn" style="background:#ef4444; color:#fff; border:none; flex:1; min-width:150px;" onclick="resetAllData()">🔄 데이터 초기화</button>
+          <button class="btn" style="background:#64748b; color:#fff; border:none; flex:1; min-width:150px;" onclick="adminLogout()">로그아웃</button>
+        </div>
+
+        <!-- 주문 관리 탭 -->
+        <div id="adm-orders" class="card">
+          <div style="padding:16px; border-bottom:1px solid var(--line); background:#f8fafc; font-weight:1000;">📊 접수된 주문 리스트</div>
+          <div style="padding:18px; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+              <thead>
+                <tr style="background:#f8fafc; border-bottom:2px solid var(--line);">
+                  <th style="padding:10px; text-align:left; font-weight:1000;">주문일</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">주문자</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">내용</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">금액</th>
+                  <th style="padding:10px; text-align:center; font-weight:1000;">관리</th>
+                </tr>
+              </thead>
+              <tbody id="order-list-body">
+                <tr><td colspan="5" style="padding:30px; text-align:center; color:#64748b;">아직 주문이 없습니다.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 상품 관리 탭 -->
+        <div id="adm-content" style="display:none;" class="card">
+          <div style="padding:16px; border-bottom:1px solid var(--line); background:#f8fafc; font-weight:1000;">📝 상품 & 마진 설정</div>
+          <div style="padding:18px;">
+            <label>카테고리 선택</label>
+            <select id="adm-cat-select" onchange="loadAdminContent()" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-size:13px; font-weight:600;">
+              <option value="indigo">소량 인디고</option>
+              <option value="digital">흑백 디지털</option>
+              <option value="offset">대량 옵셋</option>
+            </select>
+
+            <div style="margin:18px 0; border-top:1px solid #e2e8f0;"></div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div style="grid-column:span 2;">
+                <label style="color:#e11d48;">기본 마진율 설정 (%)</label>
+                <input type="number" id="adm-margin-val" placeholder="예: 100 (100% 마진 = 원가 2배)" style="border:2px solid #e11d48;">
+              </div>
+              <div style="grid-column:span 2;">
+                <label style="display:flex; align-items:center; gap:8px;">
+                  <span>상품 이미지</span>
+                  <button type="button" onclick="document.getElementById('adm-img-file').click()" style="background:#3b82f6; border:none; color:white; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:600; font-size:11px;">📁 파일 선택</button>
+                </label>
+                <input type="file" id="adm-img-file" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+                <input type="text" id="adm-img-url" placeholder="이미지 URL 또는 위 버튼으로 파일 업로드" style="margin-top:6px;">
+                <div id="adm-img-preview" style="margin-top:10px; display:none;">
+                  <img id="adm-img-preview-img" style="max-width:200px; max-height:150px; border-radius:8px; border:1px solid #cbd5e1;">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin:16px 0 8px 0;">
+              <label style="margin:0; font-weight:700;">상세설명 (에디터)</label>
+              <button onclick="generateAIContent()" style="background:#6366f1; border:none; color:white; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:700; font-size:12px; display:flex; align-items:center; gap:5px;">
+                ✨ AI 자동생성
+              </button>
+            </div>
+            <textarea id="adm-info-txt"></textarea>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+              <div style="grid-column:span 2;">
+                <label>가이드</label>
+                <textarea id="adm-guide-txt" placeholder="파일 제작 가이드를 입력하세요"></textarea>
+              </div>
+              <div style="grid-column:span 2;">
+                <label>배송안내</label>
+                <textarea id="adm-ship-txt" placeholder="배송 및 제작 기간을 입력하세요"></textarea>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top:15px;" onclick="saveAdminContent()">저장하기</button>
+          </div>
+        </div>
+
+        <!-- 회원 관리 탭 -->
+        <div id="adm-users" style="display:none;" class="card">
+          <div style="padding:16px; border-bottom:1px solid var(--line); background:#f8fafc; font-weight:1000;">👥 회원 목록</div>
+          <div style="padding:18px; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+              <thead>
+                <tr style="background:#f8fafc; border-bottom:2px solid var(--line);">
+                  <th style="padding:10px; text-align:left; font-weight:1000;">아이디</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">이름</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">연락처</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">유형</th>
+                  <th style="padding:10px; text-align:left; font-weight:1000;">가입일</th>
+                </tr>
+              </thead>
+              <tbody id="user-list-body">
+                <tr><td colspan="5" style="padding:30px; text-align:center; color:#64748b;">등록된 회원이 없습니다.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer style="background:#f8fafc; border-top:1px solid #e6edf3; padding:40px 20px; margin-top:60px;">
+      <div style="max-width:1200px; margin:0 auto;">
+        
+        <!-- Footer Top Section -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:30px; margin-bottom:40px; padding-bottom:40px; border-bottom:1px solid #e6edf3;">
+          
+          <!-- 운영시간 -->
+          <div>
+            <h4 style="margin:0 0 16px 0; font-weight:1000; color:#0f172a; font-size:14px;">운영시간</h4>
+            <div style="font-size:13px; line-height:1.8; color:#475569;">
+              <p style="margin:0 0 8px 0;"><strong style="color:#0f172a; font-weight:700;">점수시간</strong></p>
+              <p style="margin:0 0 8px 0;">월~금: 09:00 ~ 19:00</p>
+              <p style="margin:0 0 12px 0;">토·일·공휴일: 휴무</p>
+              
+              <p style="margin:0 0 8px 0;"><strong style="color:#0f172a; font-weight:700;">야간 무인접수</strong></p>
+              <p style="margin:0;">월~금: 19:00 ~ 21:00</p>
+            </div>
+          </div>
+
+          <!-- 연락처 -->
+          <div>
+            <h4 style="margin:0 0 16px 0; font-weight:1000; color:#0f172a; font-size:14px;">고객센터</h4>
+            <div style="font-size:13px; line-height:1.8; color:#475569;">
+              <p style="margin:0 0 12px 0;">
+                <a href="tel:062-225-1723" style="color:#037a3f; text-decoration:none; font-weight:700;">062-225-1723</a>
+              </p>
+              <p style="margin:0 0 8px 0;"><strong style="color:#0f172a;">이메일 문의</strong></p>
+              <p style="margin:0; word-break:break-all;">
+                <a href="mailto:ms4012@daum.net" style="color:#037a3f; text-decoration:none;">ms4012@daum.net</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- 계좌정보 -->
+          <div>
+            <h4 style="margin:0 0 16px 0; font-weight:1000; color:#0f172a; font-size:14px;">계좌정보</h4>
+            <div style="font-size:13px; line-height:1.8; color:#475569;">
+              <p style="margin:0 0 8px 0;">예금주: (주)건우프린팅</p>
+              <p style="margin:0;">
+                <strong style="color:#0f172a;">농협</strong><br>
+                301-0366-1170-41
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Middle Section -->
+        <div style="padding-bottom:30px; border-bottom:1px solid #e6edf3; margin-bottom:30px;">
+          <p style="margin:0 0 16px 0; font-size:13px; color:#475569;">
+            <a href="#" onclick="toast('회사소개'); return false;" style="color:#475569; text-decoration:none; margin-right:20px;">회사소개</a>
+            <a href="#" onclick="toast('이용약관'); return false;" style="color:#475569; text-decoration:none; margin-right:20px;">이용약관</a>
+            <a href="#" onclick="toast('개인정보처리방침'); return false;" style="color:#475569; text-decoration:none; margin-right:20px;">개인정보처리방침</a>
+            <a href="#" onclick="toast('이용문의'); return false;" style="color:#475569; text-decoration:none;">이용문의</a>
+          </p>
+        </div>
+
+        <!-- Footer Bottom Section -->
+        <div style="font-size:11px; color:#64748b; line-height:1.8;">
+          <p style="margin:0 0 12px 0;"><strong style="color:#475569; font-weight:700;">회사정보</strong></p>
+          <p style="margin:0;">회사명 : (주)건우프린팅　대표자 : 김주희　사업자번호 : </p>
+          <p style="margin:4px 0;">통신판매신고번호 : 　본사 : 광주광역시 동구 백서로 137번길 13-6</p>
+          <p style="margin:4px 0;">소재지(접수/출고) : 광주광역시 동구 백서로 137번길 13-6</p>
+          <p style="margin:4px 0;">고객센터 : 062-225-1723</p>
+          
+          <p style="margin:20px 0 0 0; padding-top:20px; border-top:1px solid #e6edf3;">
+            Copyright © 2024 GUNWO PRINTING. All Rights Reserved.
+          </p>
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function get(id){ return document.getElementById(id); }
+
+    // ===== COMMON FUNCTIONS =====
+    function hideAll(){
+      ['view-home','view-login','view-signup','view-cart','view-cs','view-admin','view-find','view-quotation'].forEach(id=>{
+        const el = get(id);
+        if(el) el.style.display = 'none';
+      });
+    }
+
+    function toast(msg){
+      const t = get('toast');
+      if(!t) return;
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
+    }
+
+    function goHome(){ 
+      hideAll();
+      get('view-home').style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'}); 
+    }
+
+    function goLogin(){
+      hideAll();
+      get('view-login').style.display = 'block';
+      get('login-id').value = '';
+      get('login-pw').value = '';
+    }
+
+    function goSignup(){
+      hideAll();
+      get('view-signup').style.display = 'block';
+      get('signup-step-1').style.display = 'block';
+      get('signup-step-2').style.display = 'none';
+      get('sign-id').value = '';
+      get('sign-pw').value = '';
+      get('sign-pw2').value = '';
+      get('sign-name').value = '';
+      get('sign-phone').value = '';
+      get('sign-addr').value = '';
+      get('sign-addr-detail').value = '';
+      get('check-all').checked = false;
+      get('term1').checked = false;
+      get('term2').checked = false;
+    }
+
+    function goCart(){
+      hideAll();
+      get('view-cart').style.display = 'block';
+      renderCartView();
+    }
+
+    function goFindAccount(){
+      hideAll();
+      get('view-find').style.display = 'block';
+      switchFindTab('id');
+      // 입력값 초기화
+      get('find-id-name').value = '';
+      get('find-id-phone').value = '';
+      get('find-pw-id').value = '';
+      get('find-pw-name').value = '';
+      get('find-pw-phone').value = '';
+      get('find-id-result').style.display = 'none';
+      get('find-pw-result').style.display = 'none';
+    }
+
+    function switchFindTab(tab){
+      const idTab = get('find-id-tab');
+      const pwTab = get('find-pw-tab');
+      const idPanel = get('find-id-panel');
+      const pwPanel = get('find-pw-panel');
+
+      if(tab === 'id'){
+        idTab.style.background = 'var(--home-primary)';
+        idTab.style.color = '#fff';
+        pwTab.style.background = '#fff';
+        pwTab.style.color = '#64748b';
+        idPanel.style.display = 'block';
+        pwPanel.style.display = 'none';
+        get('find-id-result').style.display = 'none';
+      } else {
+        pwTab.style.background = 'var(--home-primary)';
+        pwTab.style.color = '#fff';
+        idTab.style.background = '#fff';
+        idTab.style.color = '#64748b';
+        pwPanel.style.display = 'block';
+        idPanel.style.display = 'none';
+        get('find-pw-result').style.display = 'none';
+      }
+    }
+
+    function findId(){
+      const name = get('find-id-name').value.trim();
+      const phone = get('find-id-phone').value.trim();
+
+      if(!name || !phone){
+        return alert('이름과 휴대폰번호를 입력해주세요.');
+      }
+
+      const users = JSON.parse(localStorage.getItem(USER_DB_KEY) || '[]');
+      const found = users.find(u => u.name === name && u.phone === phone);
+
+      if(found){
+        get('found-id').textContent = found.id;
+        get('find-id-result').style.display = 'block';
+      } else {
+        alert('일치하는 회원 정보가 없습니다.');
+      }
+    }
+
+    function findPassword(){
+      const id = get('find-pw-id').value.trim();
+      const name = get('find-pw-name').value.trim();
+      const phone = get('find-pw-phone').value.trim();
+
+      if(!id || !name || !phone){
+        return alert('모든 정보를 입력해주세요.');
+      }
+
+      const users = JSON.parse(localStorage.getItem(USER_DB_KEY) || '[]');
+      const found = users.find(u => u.id === id && u.name === name && u.phone === phone);
+
+      if(found){
+        get('found-pw').textContent = found.pw;
+        get('find-pw-result').style.display = 'block';
+      } else {
+        alert('일치하는 회원 정보가 없습니다.');
+      }
+    }
+
+    function showCS(){
+      get('view-cs').style.display = 'flex';
+    }
+
+    function hideCS(){
+      get('view-cs').style.display = 'none';
+    }
+
+    function goAdmin(){
+      hideAll();
+      get('view-admin').style.display = 'block';
+      get('admin-pw').focus();
+    }
+
+    function adminLogin(){
+      const pw = get('admin-pw').value.trim();
+      if(pw === '1234'){
+        get('admin-pw').parentElement.parentElement.parentElement.style.display = 'none';
+        get('admin-panel').style.display = 'block';
+        renderOrderList();
+        renderUserList();
+        toast('관리자 모드로 접속했습니다');
+      } else {
+        alert('비밀번호가 틀렸습니다');
+        get('admin-pw').value = '';
+        get('admin-pw').focus();
+      }
+    }
+
+    function adminLogout(){
+      if(confirm('관리자 모드를 종료하시겠습니까?')){
+        get('admin-pw').value = '';
+        get('admin-panel').style.display = 'none';
+        get('admin-pw').parentElement.parentElement.parentElement.style.display = 'block';
+        goHome();
+      }
+    }
+
+    // ===== 상품 마진/상세 콘텐츠 관리 =====
+    const CONTENT_DB_KEY = 'print_content_db';
+    const DEFAULT_CONTENT = {
+      indigo: { margin: 100, img: '', info: '<p>HP Indigo 7K 프리미엄 인쇄</p>', guide: 'PDF 권장', ship: '착불/택배' },
+      digital: { margin: 100, img: '', info: '<p>흑백 디지털 마스터</p>', guide: 'Grayscale 권장', ship: '착불/택배' },
+      offset: { margin: 30, img: '', info: '<p>대량 옵셋 인쇄</p>', guide: 'CMYK 필수', ship: '용달 착불' }
+    };
+    let contentDB = JSON.parse(localStorage.getItem(CONTENT_DB_KEY) || 'null') || DEFAULT_CONTENT;
+
+    function mergeContentDefaults(){
+      const merged = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
+      Object.keys(merged).forEach(cat => {
+        if(contentDB[cat]) merged[cat] = { ...merged[cat], ...contentDB[cat] };
+      });
+      contentDB = merged;
+      localStorage.setItem(CONTENT_DB_KEY, JSON.stringify(contentDB));
+    }
+    mergeContentDefaults();
+
+    function initAdminContentEditor(){
+      if(window.jQuery && $('#adm-info-txt').length && !$('#adm-info-txt').data('summernote')){
+        $('#adm-info-txt').summernote({ height: 300, lang: 'ko-KR' });
+      }
+    }
+
+    function loadAdminContent(){
+      initAdminContentEditor();
+      const cat = get('adm-cat-select').value;
+      const data = contentDB[cat];
+      if(!data) return;
+      get('adm-margin-val').value = data.margin ?? 100;
+      get('adm-img-url').value = data.img || '';
+      if(data.img){
+        get('adm-img-preview').style.display = 'block';
+        get('adm-img-preview-img').src = data.img;
+      } else {
+        get('adm-img-preview').style.display = 'none';
+      }
+      if(window.jQuery && $('#adm-info-txt').length) $('#adm-info-txt').summernote('code', data.info || '');
+      get('adm-guide-txt').value = data.guide || '';
+      get('adm-ship-txt').value = data.ship || '';
+    }
+
+    function handleImageUpload(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      if(!file.type.startsWith('image/')){
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const dataUrl = e.target.result;
+        get('adm-img-url').value = dataUrl;
+        get('adm-img-preview').style.display = 'block';
+        get('adm-img-preview-img').src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ===== 견적서 파일 첨부 =====
+    let quoteAttachedFiles = [];
+
+    function handleQuoteFileUpload(event){
+      const files = Array.from(event.target.files);
+      if(files.length === 0) return;
+
+      files.forEach(file => {
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        if(file.size > maxSize){
+          alert(`${file.name}은(는) 너무 큽니다. 최대 50MB까지 첨부 가능합니다.`);
+          return;
+        }
+
+        quoteAttachedFiles.push({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          file: file
+        });
+      });
+
+      updateQuoteFileList();
+      event.target.value = ''; // 같은 파일 재선택 가능하도록
+    }
+
+    function updateQuoteFileList(){
+      const listEl = get('quote-file-list');
+      if(quoteAttachedFiles.length === 0){
+        listEl.innerHTML = '';
+        return;
+      }
+
+      listEl.innerHTML = quoteAttachedFiles.map((f, idx) => {
+        const sizeKB = (f.size / 1024).toFixed(1);
+        const sizeMB = (f.size / (1024 * 1024)).toFixed(2);
+        const sizeText = f.size > 1024 * 1024 ? `${sizeMB}MB` : `${sizeKB}KB`;
+        
+        return `
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 10px; background:#0f172a; border-radius:6px; margin-bottom:6px; font-size:11px;">
+            <div style="flex:1; overflow:hidden;">
+              <div style="color:#f8fafc; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${f.name}</div>
+              <div style="color:#94a3b8; margin-top:2px;">${sizeText}</div>
+            </div>
+            <button onclick="removeQuoteFile(${idx})" style="background:#ef4444; border:none; color:white; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px; font-weight:700;">삭제</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function removeQuoteFile(idx){
+      quoteAttachedFiles.splice(idx, 1);
+      updateQuoteFileList();
+    }
+
+    function saveAdminContent(){
+      const cat = get('adm-cat-select').value;
+      const marginVal = Number(get('adm-margin-val').value) || 0;
+      contentDB[cat] = {
+        margin: marginVal,
+        img: get('adm-img-url').value.trim(),
+        info: (window.jQuery && $('#adm-info-txt').length) ? $('#adm-info-txt').summernote('code') : '',
+        guide: get('adm-guide-txt').value,
+        ship: get('adm-ship-txt').value
+      };
+      localStorage.setItem(CONTENT_DB_KEY, JSON.stringify(contentDB));
+      applyContentToDetailTabs(cat);
+      alert('저장되었습니다 (마진율 ' + marginVal + '% 적용)');
+    }
+
+    function generateAIContent(){
+      if(!confirm('AI로 상세설명을 생성하시겠습니까? 기존 내용은 대체됩니다.')) return;
+      const sample = `<h2>상품 특징</h2><p>프리미엄 인쇄 품질과 선명한 컬러를 제공합니다.</p><ul><li>고급 종이 사용</li><li>선명한 색감</li><li>빠른 제작</li></ul>`;
+      if(window.jQuery && $('#adm-info-txt').length) $('#adm-info-txt').summernote('code', sample);
+      alert('기본 템플릿이 적용되었습니다. 수정 후 저장해주세요.');
+    }
+
+    function applyContentToDetailTabs(cat){
+      const data = contentDB[cat];
+      if(!data) return;
+      const detail = get('tab-detail-content');
+      const guide = get('tab-guide-content');
+      const ship = get('tab-shipping-content');
+      if(detail) detail.innerHTML = data.info || '';
+      if(guide) guide.innerHTML = `<div style="background:#fff; border-radius:12px; padding:30px;"><h2 style="font-size:20px; font-weight:900; color:#0f172a; margin:0 0 20px 0; border-left:4px solid var(--primary); padding-left:12px;">제작 가이드</h2><div style="line-height:1.8; color:#475569;">${(data.guide || '').replace(/\n/g,'<br>')}</div></div>`;
+      if(ship) ship.innerHTML = `<div style="background:#fff; border-radius:12px; padding:30px;"><h2 style="font-size:20px; font-weight:900; color:#0f172a; margin:0 0 20px 0; border-left:4px solid var(--primary); padding-left:12px;">배송 안내</h2><div style="line-height:1.8; color:#475569;">${(data.ship || '').replace(/\n/g,'<br>')}</div></div>`;
+    }
+
+    function showAdminTab(tabId){
+      ['adm-orders','adm-content','adm-users'].forEach(id => {
+        const el = get(id);
+        if(el) el.style.display = 'none';
+      });
+      const activeTab = get(tabId);
+      if(activeTab) activeTab.style.display = 'block';
+      if(tabId === 'adm-content') loadAdminContent();
+    }
+
+    function renderOrderList(){
+      const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || '[]');
+      const body = get('order-list-body');
+      body.innerHTML = '';
+      
+      if(orders.length === 0){
+        body.innerHTML = '<tr><td colspan="5" style="padding:30px; text-align:center; color:#64748b;">아직 주문이 없습니다.</td></tr>';
+      } else {
+        orders.forEach((order, i) => {
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid #e6edf3';
+          tr.innerHTML = `
+            <td style="padding:10px;">${order.date || '-'}</td>
+            <td style="padding:10px;">${order.userName || '비회원'}</td>
+            <td style="padding:10px;">상품</td>
+            <td style="padding:10px;">${(order.price || 0).toLocaleString()}원</td>
+            <td style="padding:10px; text-align:center;">
+              <button style="padding:4px 8px; background:#037a3f; color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:11px; font-weight:700;">상세보기</button>
+            </td>
+          `;
+          body.appendChild(tr);
+        });
+      }
+    }
+
+    function renderUserList(){
+      const users = JSON.parse(localStorage.getItem(USER_DB_KEY) || '[]');
+      const body = get('user-list-body');
+      body.innerHTML = '';
+      
+      if(users.length === 0){
+        body.innerHTML = '<tr><td colspan="5" style="padding:30px; text-align:center; color:#64748b;">등록된 회원이 없습니다.</td></tr>';
+      } else {
+        users.forEach((user, i) => {
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid #e6edf3';
+          const typeText = user.type === 'business' ? '사업자' : '일반';
+          tr.innerHTML = `
+            <td style="padding:10px;">${user.id || '-'}</td>
+            <td style="padding:10px;">${user.name || '-'}</td>
+            <td style="padding:10px;">${user.phone || '-'}</td>
+            <td style="padding:10px;">${typeText}</td>
+            <td style="padding:10px;">${user.joinDate || '-'}</td>
+          `;
+          body.appendChild(tr);
+        });
+      }
+    }
+
+    function resetAllData(){
+      if(confirm('⚠️ 모든 데이터를 초기화하시겠습니까?\n(복구 불가능합니다)')){
+        localStorage.removeItem(CART_KEY);
+        localStorage.removeItem(ORDER_KEY);
+        localStorage.removeItem(USER_DB_KEY);
+        localStorage.removeItem(CURRENT_USER_KEY);
+        alert('초기화 완료되었습니다');
+        location.reload();
+      }
+    }
+
+    // ===== QUOTATION (견적) 함수 =====
+    function addQuoteToCart(){
+      const coating = get('quote-coating').value;
+      const paper = get('quote-paper').value;
+      const color = get('quote-color').value;
+      const size = get('quote-size').value;
+      const qty = get('quote-qty').value;
+      const totalPrice = get('quote-total-price').textContent;
+
+      const title = get('quote-title').textContent;
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      
+      // 첨부 파일 정보
+      const fileInfo = quoteAttachedFiles.length > 0 
+        ? `📎 첨부파일 ${quoteAttachedFiles.length}개: ${quoteAttachedFiles.map(f => f.name).join(', ')}`
+        : '';
+
+      cart.push({
+        name: `${title} (${size}, ${qty})`,
+        qty: parseInt(qty),
+        price: parseInt(totalPrice.replace(/[^0-9]/g, '')),
+        shipping: 0,
+        specs: `코팅: ${coating}, 용지: ${paper}, 색상: ${color}, 사이즈: ${size}`,
+        files: quoteAttachedFiles.map(f => ({ name: f.name, size: f.size, type: f.type })),
+        fileInfo: fileInfo,
+        date: new Date().toLocaleString()
+      });
+
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartBadge();
+      alert('견적이 장바구니에 추가되었습니다!' + (fileInfo ? '\n' + fileInfo : ''));
+      
+      // 파일 목록 초기화
+      quoteAttachedFiles = [];
+      updateQuoteFileList();
+      
+      goHome();
+    }
+
+    function showCS(){
+      hideAll();
+      const csModal = get('view-cs');
+      if(csModal) csModal.style.display = 'flex';
+      get('cs-message').value = '';
+    }
+
+    function hideCS(){
+      hideAll();
+      goHome();
+    }
+
+    function submitCS(){
+      const msg = get('cs-message').value.trim();
+      if(!msg) return alert('문의 내용을 입력해주세요.');
+      toast('문의가 접수되었습니다.');
+      hideCS();
+    }
+
+    // ===== SIGNUP LOGIC =====
+    const USER_DB_KEY = 'print_users_v2';
+    const CART_KEY = 'print_cart_v2';
+    const ORDER_KEY = 'print_order_v2';
+    const CURRENT_USER_KEY = 'print_current_user';
+    let currentSignupType = 'general';
+
+    function startSignup(type){
+      currentSignupType = type;
+      const isBiz = type === 'business';
+      get('signup-step-1').style.display = 'none';
+      get('signup-step-2').style.display = 'block';
+      get('area-business').style.display = isBiz ? 'block' : 'none';
+    }
+
+    function backToStep1(){
+      get('signup-step-1').style.display = 'block';
+      get('signup-step-2').style.display = 'none';
+    }
+
+    function toggleAllTerms(){
+      const isChecked = get('check-all').checked;
+      get('term1').checked = isChecked;
+      get('term2').checked = isChecked;
+    }
+
+    function checkIdDuplicate(){
+      const id = get('sign-id').value.trim();
+      if(!id) return alert('아이디를 입력해주세요');
+      const users = JSON.parse(localStorage.getItem(USER_DB_KEY) || '[]');
+      const exists = users.find(u => u.id === id);
+      alert(exists ? '이미 사용중인 아이디입니다.' : '사용 가능한 아이디입니다.');
+    }
+
+    function openAddressSearch(){
+      if(typeof daum === 'undefined'){
+        alert('주소 API 준비 중입니다.');
+        return;
+      }
+      new daum.Postcode({
+        oncomplete: function(data){
+          const addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+          get('sign-addr').value = addr;
+          get('sign-addr-detail').focus();
+        }
+      }).open();
+    }
+
+    function submitSignup(){
+      if(!get('term1').checked || !get('term2').checked){
+        return alert('모든 약관에 동의해야 가입할 수 있습니다.');
+      }
+      const id = get('sign-id').value.trim();
+      const pw = get('sign-pw').value.trim();
+      const pw2 = get('sign-pw2').value.trim();
+      const name = get('sign-name').value.trim();
+      const phone = get('sign-phone').value.trim();
+      const addr = get('sign-addr').value.trim();
+      const detail = get('sign-addr-detail').value.trim();
+      
+      if(!id || !pw || !name || !phone) return alert('필수 정보를 입력해주세요.');
+      if(pw !== pw2) return alert('비밀번호가 일치하지 않습니다.');
+      
+      const users = JSON.parse(localStorage.getItem(USER_DB_KEY) || '[]');
+      if(users.find(u => u.id === id)) return alert('아이디 중복확인을 해주세요.');
+
+      let userData = {
+        id, pw, name, phone,
+        address: addr ? `${addr} ${detail}` : '',
+        type: currentSignupType,
+        joinDate: new Date().toLocaleDateString()
+      };
+
+      if(currentSignupType === 'business'){
+        const bizName = get('sign-biz-name').value.trim();
+        const bizNum = get('sign-biz-num').value.trim();
+        const bizFile = get('sign-biz-file').value;
+        if(!bizName || !bizNum || !bizFile) return alert('사업자 정보를 모두 입력해주세요.');
+        userData.bizName = bizName;
+        userData.bizNum = bizNum;
+        userData.status = 'pending';
+      } else {
+        userData.status = 'active';
+      }
+
+      users.push(userData);
+      localStorage.setItem(USER_DB_KEY, JSON.stringify(users));
+      alert(currentSignupType === 'business' ? '가입 신청이 완료되었습니다.' : '회원가입이 완료되었습니다!');
+      goLogin();
+    }
+
+    // ===== LOGIN LOGIC =====
+    function login(event){
+      event.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const userPassword = document.getElementById('userPassword').value;
+      if (!userId || !userPassword) {
+        alert('아이디와 비밀번호를 입력해주세요.');
+        return false;
+      }
+      // 로그인 로직 추가
+      alert(`로그인 시도: 아이디 - ${userId}, 비밀번호 - ${userPassword}`);
+      // 실제 로그인 처리는 서버와의 통신으로 구현해야 합니다.
+      return false;
+    }
+
+    function logout(){
+      if(confirm('로그아웃 하시겠습니까?')){
+        localStorage.removeItem(CURRENT_USER_KEY);
+        updateNav();
+        goHome();
+      }
+    }
+
+    function updateNav(){
+      const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+      const nav = get('nav-links');
+      if(!nav) return;
+      
+      if(user){
+        nav.innerHTML = `
+          <a>${user.name}님</a>
+          <a onclick="logout()" style="color:#ef4444;">로그아웃</a>
+          <a onclick="goFindAccount()">ID·PW찾기</a>
+          <a onclick="showCS()">고객센터</a>
+          <a onclick="toast('주문내역 준비중')">주문내역</a>
+          <a onclick="goCart()" class="nav-cart">장바구니 <span class="cart-badge" id="cart-badge">0</span></a>
+        `;
+      } else {
+        nav.innerHTML = `
+          <a onclick="goLogin()">로그인</a>
+          <a onclick="goSignup()">회원가입</a>
+          <a onclick="goFindAccount()">ID·PW찾기</a>
+          <a onclick="showCS()">고객센터</a>
+          <a onclick="toast('주문내역 준비중')">주문내역</a>
+          <a onclick="goCart()" class="nav-cart">장바구니 <span class="cart-badge" id="cart-badge">0</span></a>
+        `;
+      }
+      updateCartBadge();
+    }
+
+    // ===== CART LOGIC =====
+    function updateCartBadge(){
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      const badge = get('cart-badge');
+      if(badge) badge.textContent = cart.length;
+    }
+
+    function renderCartView(){
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      const list = get('cart-list');
+      list.innerHTML = '';
+
+      let totalP = 0, totalS = 0;
+
+      if(cart.length === 0){
+        list.innerHTML = `<div style="text-align:center; padding:60px 20px; background:#f8fafc; border-radius:16px; border:2px dashed var(--line); color:#64748b;">🛒 장바구니가 비어있습니다</div>`;
+      } else {
+        cart.forEach((item, i) => {
+          const itemTotal = (item.price || 0);
+          totalP += itemTotal;
+          totalS += (item.shipping || 0);
+          
+          // 첨부파일 정보 표시
+          const filesHtml = (item.files && item.files.length > 0) 
+            ? `<div style="margin-top:8px; padding:8px; background:#f1f5f9; border-radius:6px; font-size:11px; color:#475569;">
+                 📎 첨부파일 ${item.files.length}개: ${item.files.map(f => f.name).join(', ')}
+               </div>`
+            : '';
+          
+          list.innerHTML += `
+            <div style="display:flex; justify-content:space-between; background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; align-items:center;">
+              <div style="flex:1;">
+                <h4 style="margin:0 0 8px 0; font-weight:900; color:#0f172a;">${item.name || '상품'}</h4>
+                <p style="margin:0; font-size:12px; color:#64748b;">수량: ${item.qty || 0}</p>
+                ${filesHtml}
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:18px; font-weight:1100; color:#0f172a;">${itemTotal.toLocaleString()}원</div>
+                <button class="btn btn-secondary" onclick="removeCart(${i})" style="width:80px; padding:6px; margin-top:8px; font-size:12px;">삭제</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      get('ct-price').textContent = totalP.toLocaleString() + '원';
+      get('ct-ship').textContent = totalS.toLocaleString() + '원';
+      get('ct-total').textContent = (totalP + totalS).toLocaleString() + '원';
+    }
+
+    function removeCart(i){
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      cart.splice(i, 1);
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      renderCartView();
+      updateCartBadge();
+    }
+
+    function submitOrder(){
+      const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+      if(!user) return alert('로그인이 필요합니다.');
+      
+      const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      if(cart.length === 0) return alert('장바구니가 비었습니다.');
+      
+      const orders = JSON.parse(localStorage.getItem(ORDER_KEY) || '[]');
+      orders.push({...cart[0], userName: user.name, userPhone: user.phone, date: new Date().toLocaleString()});
+      localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
+      localStorage.removeItem(CART_KEY);
+      
+      updateCartBadge();
+      alert('주문이 접수되었습니다!');
+      goHome();
+    }
+
+    // ===== HOME LOGIC =====
+    // Top nav (비로그인 기본)
+    function renderNav(){
+      updateNav();
+    }
+
+    // Home navigation stubs
+    function toggleFakeMenu(){ toast('전체 메뉴는 추후 연결'); }
+    function setCategory(cat, bindType){
+      hideAll();
+      get('view-quotation').style.display = 'block';
+      // 기본으로 상세 탭을 활성화
+      if(typeof switchProductTab === 'function') switchProductTab('detail');
+      window.currentCategory = cat;
+      window.currentBindType = bindType || 'staple';
+      
+      const titles = {
+        indigo: '소량 인디고',
+        digital: '흑백 디지털',
+        offset: '대량 옵셋'
+      };
+      
+      const bindNames = {
+        staple: '중철',
+        perfect: '무선'
+      };
+      
+      let titleText = titles[cat] || '견적 계산기';
+      if(cat === 'indigo' && bindType){
+        titleText += ' - ' + bindNames[bindType];
+      }
+      
+      get('quote-title').textContent = titleText;
+      
+      // 인디고인 경우 제본 타입에 따라 라디오 버튼 자동 선택
+      if(cat === 'indigo'){
+        const radios = document.getElementsByName('ind-bind');
+        radios.forEach(r => {
+          if(r.value === window.currentBindType) r.checked = true;
+        });
+      }
+      
+      if(typeof contentDB !== 'undefined' && contentDB[cat]){
+        applyContentToDetailTabs(cat);
+        const imgEl = get('quote-indigo-img');
+        if(imgEl && cat === 'indigo' && contentDB[cat].img){
+          imgEl.src = contentDB[cat].img;
+        }
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // Slider
+    let homeIdx = 0;
+    function slides(){ return Array.from(document.querySelectorAll('#home-slider .home-slide')); }
+    function updatePager(){
+      const s = slides();
+      s.forEach((el,i)=>el.classList.toggle('active', i===homeIdx));
+      const p = get('home-pager');
+      if(p) p.textContent = `${homeIdx+1} / ${s.length}`;
+    }
+    function homeNext(){
+      const s = slides();
+      if(!s.length) return;
+      homeIdx = (homeIdx + 1) % s.length;
+      updatePager();
+    }
+    function homePrev(){
+      const s = slides();
+      if(!s.length) return;
+      homeIdx = (homeIdx - 1 + s.length) % s.length;
+      updatePager();
+    }
+
+    // Initialize
+    renderNav();
+    updatePager();
+    updateCartBadge();
+
+    // 라디오 버튼 스타일 전환
+    document.addEventListener('DOMContentLoaded', function() {
+      // 표지 페이지 드롭다운 변경 시 단면/양면 자동 선택
+      const coverPagesSelect = document.getElementById('ind-coverPages');
+      if(coverPagesSelect) {
+        coverPagesSelect.addEventListener('change', function() {
+          const pages = this.value;
+          const coverPrintRadios = document.querySelectorAll('input[name="ind-coverPrint"]');
+          
+          if(pages === '2') {
+            // 2p 선택 시 단면 선택
+            coverPrintRadios.forEach(radio => {
+              if(radio.value === '1') {
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+              }
+            });
+          } else if(pages === '4') {
+            // 4p 선택 시 양면 선택
+            coverPrintRadios.forEach(radio => {
+              if(radio.value === '2') {
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+              }
+            });
+          }
+        });
+      }
+      
+      // 모든 라디오 버튼에 대해 이벤트 리스너 추가
+      const radioGroups = ['ind-bind', 'ind-coverPrint', 'ind-coverColor', 'ind-coat', 'ind-innerPrint', 'ind-innerColor'];
+      
+      radioGroups.forEach(groupName => {
+        const radios = document.querySelectorAll(`input[name="${groupName}"]`);
+        radios.forEach(radio => {
+          radio.addEventListener('change', function() {
+            // 같은 그룹의 모든 label 초기화
+            const allLabels = document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+              const label = r.parentElement;
+              label.style.border = '1px solid #cbd5e1';
+              label.style.background = '#fff';
+              label.style.color = '#475569';
+              label.style.fontWeight = '600';
+            });
+            
+            // 선택된 항목 스타일 변경
+            const selectedLabel = this.parentElement;
+            selectedLabel.style.border = '2px solid var(--primary)';
+            selectedLabel.style.background = '#ecfdf5';
+            selectedLabel.style.color = 'var(--primary)';
+            selectedLabel.style.fontWeight = '700';
+          });
+        });
+      });
+    });
+
+    // 상품 상세 탭 전환 함수
+    function switchProductTab(tabName) {
+      // 모든 탭 버튼 초기화
+      document.getElementById('tab-detail-btn').style.background = '#f1f5f9';
+      document.getElementById('tab-detail-btn').style.color = '#64748b';
+      document.getElementById('tab-detail-btn').style.fontWeight = '600';
+      
+      document.getElementById('tab-guide-btn').style.background = '#f1f5f9';
+      document.getElementById('tab-guide-btn').style.color = '#64748b';
+      document.getElementById('tab-guide-btn').style.fontWeight = '600';
+      
+      document.getElementById('tab-shipping-btn').style.background = '#f1f5f9';
+      document.getElementById('tab-shipping-btn').style.color = '#64748b';
+      document.getElementById('tab-shipping-btn').style.fontWeight = '600';
+
+      // 모든 탭 콘텐츠 숨기기
+      document.getElementById('tab-detail-content').style.display = 'none';
+      document.getElementById('tab-guide-content').style.display = 'none';
+      document.getElementById('tab-shipping-content').style.display = 'none';
+
+      // 선택된 탭 활성화
+      if(tabName === 'detail') {
+        document.getElementById('tab-detail-btn').style.background = 'var(--primary)';
+        document.getElementById('tab-detail-btn').style.color = '#fff';
+        document.getElementById('tab-detail-btn').style.fontWeight = '700';
+        document.getElementById('tab-detail-content').style.display = 'block';
+      } else if(tabName === 'guide') {
+        document.getElementById('tab-guide-btn').style.background = 'var(--primary)';
+        document.getElementById('tab-guide-btn').style.color = '#fff';
+        document.getElementById('tab-guide-btn').style.fontWeight = '700';
+        document.getElementById('tab-guide-content').style.display = 'block';
+      } else if(tabName === 'shipping') {
+        document.getElementById('tab-shipping-btn').style.background = 'var(--primary)';
+        document.getElementById('tab-shipping-btn').style.color = '#fff';
+        document.getElementById('tab-shipping-btn').style.fontWeight = '700';
+        document.getElementById('tab-shipping-content').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
